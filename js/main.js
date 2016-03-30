@@ -11,8 +11,8 @@ PinBall.Main.prototype = {
         circle.endFill();
 
         this.ball = this.add.sprite(
-            this.world.centerX,
-            this.world.centerY,
+            this.world.width - 10,
+            this.world.height - 10,
             circle.generateTexture()
         );
         this.ball.anchor.set(0.5);
