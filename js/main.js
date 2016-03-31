@@ -16,5 +16,18 @@ PinBall.Main.prototype = {
             circle.generateTexture()
         );
         this.ball.anchor.set(0.5);
+
+        var rect = this.make.graphics(0, 0);
+        rect.lineStyle(8, 0xFF0000, 0.8);
+        rect.beginFill(0xFF700B, 1);
+        rect.drawRectangle(-50, -50, 50, 50);
+        rect.endFill();
+
+        this.arm = this.add.sprite(
+            this.world.centerX, 
+            this.world.centerY,
+            rect.generateTexture()
+        );
+        this.arm.anchor.set(0.5);
     }
 }
