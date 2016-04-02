@@ -4,8 +4,9 @@ module Pinball {
 
     export class Main extends Phaser.State {
 
-        ball: Phaser.Sprite;;
-        arm: Phaser.Sprite;;
+        ball: Phaser.Sprite;
+        leftArm: Phaser.Sprite;
+        rightArm: Phaser.Sprite;
 
         create() {
             var circle = this.make.graphics(0, 0);
@@ -25,17 +26,25 @@ module Pinball {
             rect.lineStyle(8, 0xFF0000, 0.8);
             rect.beginFill(0xFF700B, 1);
 
-            rect.drawRect(-50, -50, 100, 100);
+            rect.drawRect(-50, -50, 100, 20);
             rect.endFill();
 
-            this.arm = this.add.sprite(
-                this.world.centerX, 
+            this.leftArm = this.add.sprite(
+                this.world.centerX - 120, 
                 this.world.centerY,
                 rect.generateTexture()
             );
-            this.arm.anchor.set(0.5);
+            this.leftArm.anchor.set(0.1, 0.5);
+            this.leftArm.angle = 45;
 
-            // TODO figure out how to compile ts from either vim or in command line
+            this.leftArm = this.add.sprite(
+                this.world.centerX + 120, 
+                this.world.centerY,
+                rect.generateTexture()
+            );
+            this.leftArm.anchor.set(0.9, 0.5);
+            this.leftArm.angle = -45;
+
         }
     }
 }
