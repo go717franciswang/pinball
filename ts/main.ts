@@ -11,6 +11,8 @@ module Pinball {
         rightDown: boolean;
 
         create() {
+            this.physics.startSystem(Phaser.Physics.P2JS);
+
             var circle = this.make.graphics(0, 0);
             circle.lineStyle(8, 0xFF0000, 0.8);
             circle.beginFill(0xFF700B, 1);
@@ -57,6 +59,14 @@ module Pinball {
 
             this.leftDown = false;
             this.rightDown = false;
+
+            this.physics.p2.enable([ this.ball /*, this.leftArm, this.rightArm */ ], true);
+            this.ball.body.clearShapes();
+            this.ball.body.setCircle(10);
+            this.ball.inputEnabled = true;
+            this.ball.events.onInputDown.add(() => {
+                this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
+            });
         }
 
         update() {

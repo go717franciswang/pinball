@@ -13,6 +13,7 @@ var Pinball;
         }
         Main.prototype.create = function () {
             var _this = this;
+            this.physics.startSystem(Phaser.Physics.P2JS);
             var circle = this.make.graphics(0, 0);
             circle.lineStyle(8, 0xFF0000, 0.8);
             circle.beginFill(0xFF700B, 1);
@@ -39,6 +40,13 @@ var Pinball;
             rightKey.onUp.add(function () { _this.rightDown = false; });
             this.leftDown = false;
             this.rightDown = false;
+            this.physics.p2.enable([this.ball /*, this.leftArm, this.rightArm */], true);
+            this.ball.body.clearShapes();
+            this.ball.body.setCircle(10);
+            this.ball.inputEnabled = true;
+            this.ball.events.onInputDown.add(function () {
+                _this.ball.body.applyImpulse([0, -10], _this.ball.x, _this.ball.y);
+            });
         };
         Main.prototype.update = function () {
             if (this.leftDown) {
