@@ -4,6 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /// <reference path="./phaser.d.ts"/>
+/// <reference path="./p2.d.ts"/>
 var Pinball;
 (function (Pinball) {
     var Main = (function (_super) {
@@ -13,7 +14,6 @@ var Pinball;
         }
         Main.prototype.create = function () {
             var _this = this;
-            this.physics.startSystem(Phaser.Physics.P2JS);
             var circle = this.make.graphics(0, 0);
             circle.lineStyle(8, 0xFF0000, 0.8);
             circle.beginFill(0xFF700B, 1);
@@ -33,20 +33,26 @@ var Pinball;
             this.rightArm.anchor.set(0.9, 0.5);
             this.rightArm.angle = -45;
             var leftKey = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            leftKey.onDown.add(function () { _this.leftDown = true; });
+            leftKey.onDown.add(function () { console.log('left down'); _this.leftDown = true; });
             leftKey.onUp.add(function () { _this.leftDown = false; });
             var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
             rightKey.onDown.add(function () { _this.rightDown = true; });
             rightKey.onUp.add(function () { _this.rightDown = false; });
             this.leftDown = false;
             this.rightDown = false;
-            this.physics.p2.enable([this.ball /*, this.leftArm, this.rightArm */], true);
+            this.physics.startSystem(Phaser.Physics.P2JS);
+            this.physics.p2.enable([this.ball, this.leftArm /*, this.rightArm */], true);
             this.ball.body.clearShapes();
             this.ball.body.setCircle(10);
             this.ball.inputEnabled = true;
             this.ball.events.onInputDown.add(function () {
                 _this.ball.body.applyImpulse([0, -10], _this.ball.x, _this.ball.y);
             });
+            var leftArmBody = this.leftArm.body;
+            this.leftArm.anchor.set(0.1, 0.5);
+            //leftArmBody.updateCollisionMask();
+            leftArmBody.clearShapes();
+            leftArmBody.setRectangleFromSprite(this.leftArm);
         };
         Main.prototype.update = function () {
             if (this.leftDown) {
