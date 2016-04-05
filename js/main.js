@@ -50,7 +50,7 @@ var Pinball;
             });
             var leftArmBody = this.leftArm.body;
             this.leftArm.anchor.set(0.1, 0.5);
-            //leftArmBody.updateCollisionMask();
+            leftArmBody.updateCollisionMask();
             leftArmBody.clearShapes();
             leftArmBody.setRectangleFromSprite(this.leftArm);
         };
