@@ -39,7 +39,7 @@ module Pinball {
                 rect.generateTexture()
             );
             this.leftArm.anchor.set(0.1, 0.5);
-            this.leftArm.angle = 45;
+            //this.leftArm.angle = 45;
 
             this.rightArm = this.add.sprite(
                 this.world.centerX + 120, 
@@ -48,10 +48,6 @@ module Pinball {
             );
             this.rightArm.anchor.set(0.9, 0.5);
             this.rightArm.angle = -45;
-
-            var leftKey = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            leftKey.onDown.add(() => { console.log('left down'); this.leftDown = true });
-            leftKey.onUp.add(() => { this.leftDown = false });
 
             var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
             rightKey.onDown.add(() => { this.rightDown = true });
@@ -70,12 +66,31 @@ module Pinball {
             });
 
             // var leftArmBody:Phaser.Physics.P2.Body = this.leftArm.body;
-            var offset = 20;
-            var pivotPoint = this.game.add.sprite(this.leftArm.x + offset, this.leftArm.y);
+            var offsetX = -this.leftArm.width*0.45;
+            var offsetY = 0;
+            var pivotPoint = this.game.add.sprite(this.leftArm.x + offsetX, this.leftArm.y + offsetY);
             this.game.physics.p2.enable(pivotPoint);
             pivotPoint.body.static = true;
             pivotPoint.body.clearCollision(true, true);
-            var constraint = this.game.physics.p2.createRevoluteConstraint(this.leftArm, [offset, 0], pivotPoint, [0, 0]);
+            var constraint = this.game.physics.p2.createRevoluteConstraint(this.leftArm, [offsetX, offsetY], pivotPoint, [0, 0]);
+            constraint.upperLimit = Phaser.Math.degToRad(-45);
+            constraint.lowerLimit = Phaser.Math.degToRad(-45);
+            constraint.upperLimitEnabled = true;
+            constraint.lowerLimitEnabled = true;
+            constraint.setMotorSpeed(2);
+            constraint.enableMotor();
+
+            var leftKey = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+            leftKey.onDown.add(() => { 
+                this.leftDown = true;
+                constraint.upperLimit = Phaser.Math.degToRad(45);
+                constraint.lowerLimit = Phaser.Math.degToRad(45);
+            });
+            leftKey.onUp.add(() => { 
+                this.leftDown = false;
+                constraint.upperLimit = Phaser.Math.degToRad(-45);
+                constraint.lowerLimit = Phaser.Math.degToRad(-45);
+            });
             // this.leftArm.anchor.set(0.1, 0.5);
             // leftArmBody.updateCollisionMask();
             // leftArmBody.clearShapes();
@@ -83,12 +98,12 @@ module Pinball {
         }
 
         update() {
-            if (this.leftDown) {
-                this.leftArm.body.angle -= 15;
-            } else {
-                this.leftArm.body.angle += 15;
-            }
-            this.leftArm.angle = Phaser.Math.clamp(this.leftArm.angle, -45, 45);
+            // if (this.leftDown) {
+            //     this.leftArm.body.angle -= 15;
+            // } else {
+            //     this.leftArm.body.angle += 15;
+            // }
+            // this.leftArm.body.angle = Phaser.Math.clamp(this.leftArm.body.angle, -45, 45);
 
             if (this.rightDown) {
                 this.rightArm.angle += 15;
