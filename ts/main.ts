@@ -69,18 +69,24 @@ module Pinball {
                 this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
             });
 
-            var leftArmBody:Phaser.Physics.P2.Body = this.leftArm.body;
-            this.leftArm.anchor.set(0.1, 0.5);
-            leftArmBody.updateCollisionMask();
-            leftArmBody.clearShapes();
-            leftArmBody.setRectangleFromSprite(this.leftArm);
+            // var leftArmBody:Phaser.Physics.P2.Body = this.leftArm.body;
+            var offset = 20;
+            var pivotPoint = this.game.add.sprite(this.leftArm.x + offset, this.leftArm.y);
+            this.game.physics.p2.enable(pivotPoint);
+            pivotPoint.body.static = true;
+            pivotPoint.body.clearCollision(true, true);
+            var constraint = this.game.physics.p2.createRevoluteConstraint(this.leftArm, [offset, 0], pivotPoint, [0, 0]);
+            // this.leftArm.anchor.set(0.1, 0.5);
+            // leftArmBody.updateCollisionMask();
+            // leftArmBody.clearShapes();
+            // leftArmBody.setRectangleFromSprite(this.leftArm);
         }
 
         update() {
             if (this.leftDown) {
-                this.leftArm.angle -= 15;
+                this.leftArm.body.angle -= 15;
             } else {
-                this.leftArm.angle += 15;
+                this.leftArm.body.angle += 15;
             }
             this.leftArm.angle = Phaser.Math.clamp(this.leftArm.angle, -45, 45);
 
