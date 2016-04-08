@@ -22,21 +22,10 @@ var Pinball;
             this.ball = this.add.sprite(this.world.width - 10, this.world.height - 10, circle.generateTexture());
             this.ball.anchor.set(0.5);
             //this.leftArm.angle = 45;
-            this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true);
-            // this.rightArm = this.add.sprite(
-            //     this.world.centerX + 120, 
-            //     this.world.height - 100,
-            //     rect.generateTexture()
-            // );
-            // this.rightArm.anchor.set(0.9, 0.5);
-            // this.rightArm.angle = -45;
-            // var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-            // rightKey.onDown.add(() => { this.rightDown = true });
-            // rightKey.onUp.add(() => { this.rightDown = false });
-            // this.leftDown = false;
-            // this.rightDown = false;
             this.physics.startSystem(Phaser.Physics.P2JS);
-            this.physics.p2.enable([this.ball, this.leftArm /*, this.rightArm */], true);
+            this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.world.centerX + 120, this.world.height - 100, false, Phaser.Keyboard.RIGHT);
+            this.physics.p2.enable([this.ball,], true);
             this.ball.body.clearShapes();
             this.ball.body.setCircle(10);
             this.ball.inputEnabled = true;
@@ -44,7 +33,7 @@ var Pinball;
                 _this.ball.body.applyImpulse([0, -10], _this.ball.x, _this.ball.y);
             });
         };
-        Main.prototype.addArm = function (x, y, left) {
+        Main.prototype.addArm = function (x, y, left, keyCode) {
             var _this = this;
             var rect = this.make.graphics(0, 0);
             rect.lineStyle(8, 0xFF0000, 0.8);
@@ -52,41 +41,45 @@ var Pinball;
             rect.drawRect(-50, -50, 100, 20);
             rect.endFill();
             var arm = this.add.sprite(x, y, rect.generateTexture());
-            arm.anchor.set(0.1, 0.5);
-            var offsetX = -arm.width * 0.45;
+            this.physics.p2.enable(arm);
+            var offsetX = arm.width * 0.45;
             var offsetY = 0;
+            var maxDegrees = 45;
+            if (left) {
+                offsetX = -offsetX;
+                maxDegrees = -maxDegrees;
+            }
             var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
-            this.game.physics.p2.enable(pivotPoint);
+            this.physics.p2.enable(pivotPoint);
             pivotPoint.body.static = true;
             pivotPoint.body.clearCollision(true, true);
             var constraint = this.game.physics.p2.createRevoluteConstraint(arm, [offsetX, offsetY], pivotPoint, [0, 0]);
-            constraint.upperLimit = Phaser.Math.degToRad(-45);
-            constraint.lowerLimit = Phaser.Math.degToRad(-45);
+            constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
+            constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
             constraint.upperLimitEnabled = true;
             constraint.lowerLimitEnabled = true;
             constraint.setMotorSpeed(2);
             constraint.enableMotor();
-            var leftKey = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            leftKey.onDown.add(function () {
+            var key = this.input.keyboard.addKey(keyCode);
+            key.onDown.add(function () {
                 _this.leftDown = true;
-                constraint.upperLimit = Phaser.Math.degToRad(45);
-                constraint.lowerLimit = Phaser.Math.degToRad(45);
+                constraint.upperLimit = Phaser.Math.degToRad(-maxDegrees);
+                constraint.lowerLimit = Phaser.Math.degToRad(-maxDegrees);
             });
-            leftKey.onUp.add(function () {
+            key.onUp.add(function () {
                 _this.leftDown = false;
-                constraint.upperLimit = Phaser.Math.degToRad(-45);
-                constraint.lowerLimit = Phaser.Math.degToRad(-45);
+                constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
+                constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
             });
             return arm;
         };
         Main.prototype.update = function () {
-            if (this.rightDown) {
-                this.rightArm.angle += 15;
-            }
-            else {
-                this.rightArm.angle -= 15;
-            }
-            this.rightArm.angle = Phaser.Math.clamp(this.rightArm.angle, -45, 45);
+            // if (this.rightDown) {
+            //     this.rightArm.angle += 15;
+            // } else {
+            //     this.rightArm.angle -= 15;
+            // }
+            // this.rightArm.angle = Phaser.Math.clamp(this.rightArm.angle, -45, 45);
         };
         return Main;
     }(Phaser.State));
