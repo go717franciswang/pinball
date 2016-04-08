@@ -12,6 +12,8 @@ module Pinball {
         rightDown: boolean;
 
         create() {
+            this.physics.startSystem(Phaser.Physics.P2JS);
+            this.physics.p2.gravity.y = 100;
 
             var circle = this.make.graphics(0, 0);
             circle.lineStyle(8, 0xFF0000, 0.8);
@@ -24,21 +26,18 @@ module Pinball {
                 this.world.height - 10,
                 circle.generateTexture()
             );
-            this.ball.anchor.set(0.5);
+            this.physics.p2.enable(this.ball);
+            this.ball.body.clearShapes();
+            this.ball.body.setCircle(10);
+            this.ball.body.fixedRotation = true;
 
-            //this.leftArm.angle = 45;
-
-            this.physics.startSystem(Phaser.Physics.P2JS);
             this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 120, this.world.height - 100, false, Phaser.Keyboard.RIGHT);
 
-            this.physics.p2.enable([ this.ball, /*, this.rightArm */ ], true);
-            this.ball.body.clearShapes();
-            this.ball.body.setCircle(10);
-            this.ball.inputEnabled = true;
-            this.ball.events.onInputDown.add(() => {
-                this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
-            });
+            // this.ball.inputEnabled = true;
+            // this.ball.events.onInputDown.add(() => {
+            //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
+            // });
         }
 
         addArm(x:number, y:number, left:boolean, keyCode:number):Phaser.Sprite {
@@ -88,12 +87,12 @@ module Pinball {
         }
 
         update() {
-            // if (this.rightDown) {
-            //     this.rightArm.angle += 15;
-            // } else {
-            //     this.rightArm.angle -= 15;
-            // }
-            // this.rightArm.angle = Phaser.Math.clamp(this.rightArm.angle, -45, 45);
+            if (this.input.activePointer.isDown) {
+                this.ball.body.x = this.input.activePointer.x;
+                this.ball.body.y = this.input.activePointer.y;
+                this.ball.body.velocity.x = 0;
+                this.ball.body.velocity.y = 0;
+            }
         }
     }
 }

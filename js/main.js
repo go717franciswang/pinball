@@ -13,25 +13,24 @@ var Pinball;
             _super.apply(this, arguments);
         }
         Main.prototype.create = function () {
-            var _this = this;
+            this.physics.startSystem(Phaser.Physics.P2JS);
+            this.physics.p2.gravity.y = 100;
             var circle = this.make.graphics(0, 0);
             circle.lineStyle(8, 0xFF0000, 0.8);
             circle.beginFill(0xFF700B, 1);
             circle.drawCircle(-50, -50, 10);
             circle.endFill();
             this.ball = this.add.sprite(this.world.width - 10, this.world.height - 10, circle.generateTexture());
-            this.ball.anchor.set(0.5);
-            //this.leftArm.angle = 45;
-            this.physics.startSystem(Phaser.Physics.P2JS);
-            this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 120, this.world.height - 100, false, Phaser.Keyboard.RIGHT);
-            this.physics.p2.enable([this.ball,], true);
+            this.physics.p2.enable(this.ball);
             this.ball.body.clearShapes();
             this.ball.body.setCircle(10);
-            this.ball.inputEnabled = true;
-            this.ball.events.onInputDown.add(function () {
-                _this.ball.body.applyImpulse([0, -10], _this.ball.x, _this.ball.y);
-            });
+            this.ball.body.fixedRotation = true;
+            this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.world.centerX + 120, this.world.height - 100, false, Phaser.Keyboard.RIGHT);
+            // this.ball.inputEnabled = true;
+            // this.ball.events.onInputDown.add(() => {
+            //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
+            // });
         };
         Main.prototype.addArm = function (x, y, left, keyCode) {
             var _this = this;
@@ -74,12 +73,12 @@ var Pinball;
             return arm;
         };
         Main.prototype.update = function () {
-            // if (this.rightDown) {
-            //     this.rightArm.angle += 15;
-            // } else {
-            //     this.rightArm.angle -= 15;
-            // }
-            // this.rightArm.angle = Phaser.Math.clamp(this.rightArm.angle, -45, 45);
+            if (this.input.activePointer.isDown) {
+                this.ball.body.x = this.input.activePointer.x;
+                this.ball.body.y = this.input.activePointer.y;
+                this.ball.body.velocity.x = 0;
+                this.ball.body.velocity.y = 0;
+            }
         };
         return Main;
     }(Phaser.State));
