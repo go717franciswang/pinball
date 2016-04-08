@@ -21,22 +21,20 @@ var Pinball;
             circle.endFill();
             this.ball = this.add.sprite(this.world.width - 10, this.world.height - 10, circle.generateTexture());
             this.ball.anchor.set(0.5);
-            var rect = this.make.graphics(0, 0);
-            rect.lineStyle(8, 0xFF0000, 0.8);
-            rect.beginFill(0xFF700B, 1);
-            rect.drawRect(-50, -50, 100, 20);
-            rect.endFill();
-            this.leftArm = this.add.sprite(this.world.centerX - 120, this.world.height - 100, rect.generateTexture());
-            this.leftArm.anchor.set(0.1, 0.5);
             //this.leftArm.angle = 45;
-            this.rightArm = this.add.sprite(this.world.centerX + 120, this.world.height - 100, rect.generateTexture());
-            this.rightArm.anchor.set(0.9, 0.5);
-            this.rightArm.angle = -45;
-            var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-            rightKey.onDown.add(function () { _this.rightDown = true; });
-            rightKey.onUp.add(function () { _this.rightDown = false; });
-            this.leftDown = false;
-            this.rightDown = false;
+            this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true);
+            // this.rightArm = this.add.sprite(
+            //     this.world.centerX + 120, 
+            //     this.world.height - 100,
+            //     rect.generateTexture()
+            // );
+            // this.rightArm.anchor.set(0.9, 0.5);
+            // this.rightArm.angle = -45;
+            // var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+            // rightKey.onDown.add(() => { this.rightDown = true });
+            // rightKey.onUp.add(() => { this.rightDown = false });
+            // this.leftDown = false;
+            // this.rightDown = false;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.enable([this.ball, this.leftArm /*, this.rightArm */], true);
             this.ball.body.clearShapes();
@@ -45,14 +43,23 @@ var Pinball;
             this.ball.events.onInputDown.add(function () {
                 _this.ball.body.applyImpulse([0, -10], _this.ball.x, _this.ball.y);
             });
-            // var leftArmBody:Phaser.Physics.P2.Body = this.leftArm.body;
-            var offsetX = -this.leftArm.width * 0.45;
+        };
+        Main.prototype.addArm = function (x, y, left) {
+            var _this = this;
+            var rect = this.make.graphics(0, 0);
+            rect.lineStyle(8, 0xFF0000, 0.8);
+            rect.beginFill(0xFF700B, 1);
+            rect.drawRect(-50, -50, 100, 20);
+            rect.endFill();
+            var arm = this.add.sprite(x, y, rect.generateTexture());
+            arm.anchor.set(0.1, 0.5);
+            var offsetX = -arm.width * 0.45;
             var offsetY = 0;
-            var pivotPoint = this.game.add.sprite(this.leftArm.x + offsetX, this.leftArm.y + offsetY);
+            var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
             this.game.physics.p2.enable(pivotPoint);
             pivotPoint.body.static = true;
             pivotPoint.body.clearCollision(true, true);
-            var constraint = this.game.physics.p2.createRevoluteConstraint(this.leftArm, [offsetX, offsetY], pivotPoint, [0, 0]);
+            var constraint = this.game.physics.p2.createRevoluteConstraint(arm, [offsetX, offsetY], pivotPoint, [0, 0]);
             constraint.upperLimit = Phaser.Math.degToRad(-45);
             constraint.lowerLimit = Phaser.Math.degToRad(-45);
             constraint.upperLimitEnabled = true;
@@ -70,18 +77,9 @@ var Pinball;
                 constraint.upperLimit = Phaser.Math.degToRad(-45);
                 constraint.lowerLimit = Phaser.Math.degToRad(-45);
             });
-            // this.leftArm.anchor.set(0.1, 0.5);
-            // leftArmBody.updateCollisionMask();
-            // leftArmBody.clearShapes();
-            // leftArmBody.setRectangleFromSprite(this.leftArm);
+            return arm;
         };
         Main.prototype.update = function () {
-            // if (this.leftDown) {
-            //     this.leftArm.body.angle -= 15;
-            // } else {
-            //     this.leftArm.body.angle += 15;
-            // }
-            // this.leftArm.body.angle = Phaser.Math.clamp(this.leftArm.body.angle, -45, 45);
             if (this.rightDown) {
                 this.rightArm.angle += 15;
             }
