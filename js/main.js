@@ -25,8 +25,8 @@ var Pinball;
             this.ball.body.clearShapes();
             this.ball.body.setCircle(10);
             this.ball.body.fixedRotation = true;
-            this.leftArm = this.addArm(this.world.centerX - 120, this.world.height - 100, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 120, this.world.height - 100, false, Phaser.Keyboard.RIGHT);
+            this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
             // this.ball.inputEnabled = true;
             // this.ball.events.onInputDown.add(() => {
             //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
