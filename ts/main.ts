@@ -15,12 +15,14 @@ module Pinball {
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
 
-            this.addWall(0, 0, this.world.width, 10);
+            var thickness = 10;
+            this.addWall(0, 0, this.world.width, thickness);
             this.addWall(0, 0, 10, this.world.height);
-            this.addWall(this.world.width-10, 0, 10, this.world.height);
-            this.addWall(this.world.width-100, 0, 120, 10, 45);
-            this.addWall(this.world.width-50, 100, 10, this.world.height);
-            // this.addWall(0, , 10, this.world.height);
+            this.addWall(this.world.width-thickness, 0, thickness, this.world.height);
+            this.addWall(this.world.width-100, 0, 120, thickness, 45);
+            this.addWall(this.world.width-50, 100, thickness, this.world.height);
+            this.addWall(0, 580, 100, thickness);
+            this.addWall(350, 580, 50, thickness);
 
             this.ball = this.addBall(this.world.width - 10, this.world.height - 10);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
