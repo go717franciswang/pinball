@@ -20,6 +20,7 @@ module Pinball {
             this.addWall(this.world.width-10, 0, 10, this.world.height);
             this.addWall(this.world.width-100, 0, 120, 10, 45);
             this.addWall(this.world.width-50, 100, 10, this.world.height);
+            // this.addWall(0, , 10, this.world.height);
 
             this.ball = this.addBall(this.world.width - 10, this.world.height - 10);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
@@ -120,6 +121,10 @@ module Pinball {
                 this.ball.body.velocity.x = 0;
                 this.ball.body.velocity.y = 0;
             }
+        }
+
+        render() {
+            console.log(this.input.activePointer.x, this.input.activePointer.y);
         }
     }
 }
