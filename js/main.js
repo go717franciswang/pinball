@@ -15,6 +15,11 @@ var Pinball;
         Main.prototype.create = function () {
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
+            this.addWall(0, 0, this.world.width, 10);
+            this.addWall(0, 0, 10, this.world.height);
+            this.addWall(this.world.width - 10, 0, 10, this.world.height);
+            this.addWall(this.world.width - 100, 0, 120, 10, 45);
+            this.addWall(this.world.width - 50, 100, 10, this.world.height);
             this.ball = this.addBall(this.world.width - 10, this.world.height - 10);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
@@ -22,6 +27,19 @@ var Pinball;
             // this.ball.events.onInputDown.add(() => {
             //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
             // });
+        };
+        Main.prototype.addWall = function (x, y, w, h, a) {
+            if (a === void 0) { a = 0; }
+            var rect = this.make.graphics(0, 0);
+            rect.lineStyle(8, 0xFF0000, 0.8);
+            rect.beginFill(0xFF700B, 1);
+            rect.drawRect(-50, -50, w, h);
+            rect.endFill();
+            var wall = this.add.sprite(x + w / 2, y + h / 2, rect.generateTexture());
+            this.physics.p2.enable(wall);
+            wall.body.static = true;
+            wall.body.angle = a;
+            return wall;
         };
         Main.prototype.addBall = function (x, y) {
             var circle = this.make.graphics(0, 0);
