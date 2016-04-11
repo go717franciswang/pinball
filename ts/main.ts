@@ -23,15 +23,10 @@ module Pinball {
             this.addWall(0, 580, 100, thickness);
             this.addWall(350, 580, 50, thickness);
 
-            this.gun = this.addWall(this.world.width - 30, this.world.height - 50, thickness, 50);
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
+            this.gun = this.addGun(this.world.width - 30, this.world.height - 50, thickness, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
-
-            // this.ball.inputEnabled = true;
-            // this.ball.events.onInputDown.add(() => {
-            //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
-            // });
         }
 
         addWall(x:number, y:number, w:number, h:number, a:number=0) {
@@ -48,6 +43,31 @@ module Pinball {
             wall.body.angle = a;
 
             return wall;
+        }
+
+        addGun(x:number, y:number, w:number, h:number, keyCode:number) {
+            var rect = this.make.graphics(0, 0);
+            rect.lineStyle(8, 0xFF0000, 0.8);
+            rect.beginFill(0xFF700B, 1);
+
+            rect.drawRect(-50, -50, w, h);
+            rect.endFill();
+
+            var gun = this.add.sprite(x+w/2, y+h/2, rect.generateTexture());
+            this.physics.p2.enable(gun);
+            gun.body.static = true;
+            var key = this.input.keyboard.addKey(keyCode);
+            key.onDown.add(() => {
+                gun.body.y += 20;
+            });
+            key.onUp.add(() => {
+                gun.body.y -= 20;
+            });
+            gun.body.onEndContact.add((contactWithBody, a2, a3, a4) => {
+                contactWithBody.applyImpulseLocal([0, 50], 0, 0);
+            });
+
+            return gun;
         }
 
         addBall(x:number, y:number):Phaser.Sprite {
@@ -120,7 +140,7 @@ module Pinball {
         }
 
         render() {
-            console.log(this.input.activePointer.x, this.input.activePointer.y);
+            //console.log(this.input.activePointer.x, this.input.activePointer.y);
         }
     }
 }

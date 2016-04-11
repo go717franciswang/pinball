@@ -23,14 +23,10 @@ var Pinball;
             this.addWall(this.world.width - 50, 100, thickness, this.world.height);
             this.addWall(0, 580, 100, thickness);
             this.addWall(350, 580, 50, thickness);
-            this.gun = this.addWall(this.world.width - 30, this.world.height - 50, thickness, 50);
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
+            this.gun = this.addGun(this.world.width - 30, this.world.height - 50, thickness, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
-            // this.ball.inputEnabled = true;
-            // this.ball.events.onInputDown.add(() => {
-            //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
-            // });
         };
         Main.prototype.addWall = function (x, y, w, h, a) {
             if (a === void 0) { a = 0; }
@@ -44,6 +40,27 @@ var Pinball;
             wall.body.static = true;
             wall.body.angle = a;
             return wall;
+        };
+        Main.prototype.addGun = function (x, y, w, h, keyCode) {
+            var rect = this.make.graphics(0, 0);
+            rect.lineStyle(8, 0xFF0000, 0.8);
+            rect.beginFill(0xFF700B, 1);
+            rect.drawRect(-50, -50, w, h);
+            rect.endFill();
+            var gun = this.add.sprite(x + w / 2, y + h / 2, rect.generateTexture());
+            this.physics.p2.enable(gun);
+            gun.body.static = true;
+            var key = this.input.keyboard.addKey(keyCode);
+            key.onDown.add(function () {
+                gun.body.y += 20;
+            });
+            key.onUp.add(function () {
+                gun.body.y -= 20;
+            });
+            gun.body.onEndContact.add(function (contactWithBody, a2, a3, a4) {
+                contactWithBody.applyImpulseLocal([0, 50], 0, 0);
+            });
+            return gun;
         };
         Main.prototype.addBall = function (x, y) {
             var circle = this.make.graphics(0, 0);
@@ -104,7 +121,7 @@ var Pinball;
             }
         };
         Main.prototype.render = function () {
-            console.log(this.input.activePointer.x, this.input.activePointer.y);
+            //console.log(this.input.activePointer.x, this.input.activePointer.y);
         };
         return Main;
     }(Phaser.State));
