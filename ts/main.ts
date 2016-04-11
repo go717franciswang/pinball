@@ -5,11 +5,10 @@ module Pinball {
 
     export class Main extends Phaser.State {
 
+        gun: Phaser.Sprite;
         ball: Phaser.Sprite;
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
-        leftDown: boolean;
-        rightDown: boolean;
 
         create() {
             this.physics.startSystem(Phaser.Physics.P2JS);
@@ -24,7 +23,8 @@ module Pinball {
             this.addWall(0, 580, 100, thickness);
             this.addWall(350, 580, 50, thickness);
 
-            this.ball = this.addBall(this.world.width - 10, this.world.height - 10);
+            this.gun = this.addWall(this.world.width - 30, this.world.height - 50, thickness, 50);
+            this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
 
@@ -57,11 +57,7 @@ module Pinball {
             circle.drawCircle(-50, -50, 10);
             circle.endFill();
 
-            var ball = this.add.sprite(
-                this.world.width - 10,
-                this.world.height - 10,
-                circle.generateTexture()
-            );
+            var ball = this.add.sprite(x, y, circle.generateTexture());
             this.physics.p2.enable(ball);
             ball.body.clearShapes();
             ball.body.setCircle(10);
@@ -103,12 +99,10 @@ module Pinball {
 
             var key = this.input.keyboard.addKey(keyCode);
             key.onDown.add(() => { 
-                this.leftDown = true;
                 constraint.upperLimit = Phaser.Math.degToRad(-maxDegrees);
                 constraint.lowerLimit = Phaser.Math.degToRad(-maxDegrees);
             });
             key.onUp.add(() => { 
-                this.leftDown = false;
                 constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
                 constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
             });
