@@ -15,22 +15,26 @@ var Pinball;
         Main.prototype.create = function () {
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
-            var circle = this.make.graphics(0, 0);
-            circle.lineStyle(8, 0xFF0000, 0.8);
-            circle.beginFill(0xFF700B, 1);
-            circle.drawCircle(-50, -50, 10);
-            circle.endFill();
-            this.ball = this.add.sprite(this.world.width - 10, this.world.height - 10, circle.generateTexture());
-            this.physics.p2.enable(this.ball);
-            this.ball.body.clearShapes();
-            this.ball.body.setCircle(10);
-            this.ball.body.fixedRotation = true;
+            this.ball = this.addBall(this.world.width - 10, this.world.height - 10);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
             // this.ball.inputEnabled = true;
             // this.ball.events.onInputDown.add(() => {
             //     this.ball.body.applyImpulse([0, -10], this.ball.x, this.ball.y);
             // });
+        };
+        Main.prototype.addBall = function (x, y) {
+            var circle = this.make.graphics(0, 0);
+            circle.lineStyle(8, 0xFF0000, 0.8);
+            circle.beginFill(0xFF700B, 1);
+            circle.drawCircle(-50, -50, 10);
+            circle.endFill();
+            var ball = this.add.sprite(this.world.width - 10, this.world.height - 10, circle.generateTexture());
+            this.physics.p2.enable(ball);
+            ball.body.clearShapes();
+            ball.body.setCircle(10);
+            ball.body.fixedRotation = true;
+            return ball;
         };
         Main.prototype.addArm = function (x, y, left, keyCode) {
             var _this = this;
