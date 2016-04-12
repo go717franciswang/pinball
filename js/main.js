@@ -18,6 +18,7 @@ var Pinball;
                 'dead_face', 'happy_face', 'sad_face']);
         };
         Main.prototype.create = function () {
+            this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
             var thickness = 10;
@@ -82,7 +83,7 @@ var Pinball;
             rect.beginFill(0xFF700B, 1);
             rect.drawRect(-50, -50, 100, 20);
             rect.endFill();
-            var arm = this.add.sprite(x, y, rect.generateTexture());
+            var arm = this.add.sprite(x, y, 'arm');
             this.physics.p2.enable(arm);
             var offsetX = arm.width * 0.45;
             var offsetY = 0;
@@ -90,6 +91,9 @@ var Pinball;
             if (left) {
                 offsetX = -offsetX;
                 maxDegrees = -maxDegrees;
+            }
+            else {
+                arm.scale.x *= -1;
             }
             var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
             this.physics.p2.enable(pivotPoint);
