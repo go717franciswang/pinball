@@ -10,6 +10,12 @@ module Pinball {
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
 
+        preload() {
+            this.load.path = 'assets/';
+            this.load.images(['ball', 'arm', 'angry_face', 'confused_face', 
+                             'dead_face', 'happy_face', 'sad_face']);
+        }
+
         create() {
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
@@ -71,13 +77,8 @@ module Pinball {
         }
 
         addBall(x:number, y:number):Phaser.Sprite {
-            var circle = this.make.graphics(0, 0);
-            circle.lineStyle(8, 0xFF0000, 0.8);
-            circle.beginFill(0xFF700B, 1);
-            circle.drawCircle(-50, -50, 10);
-            circle.endFill();
-
-            var ball = this.add.sprite(x, y, circle.generateTexture());
+            var ball = this.add.sprite(x, y, 'ball');
+            ball.scale.set(2);
             this.physics.p2.enable(ball);
             ball.body.clearShapes();
             ball.body.setCircle(10);
