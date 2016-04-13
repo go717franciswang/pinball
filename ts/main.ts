@@ -12,7 +12,7 @@ module Pinball {
 
         preload() {
             this.load.path = 'assets/';
-            this.load.images(['ball', 'arm', 'angry_face', 'confused_face', 
+            this.load.images(['ball', 'arm_left', 'angry_face', 'confused_face', 
                              'dead_face', 'happy_face', 'sad_face']);
             this.load.physics('arm');
         }
@@ -90,10 +90,14 @@ module Pinball {
         }
 
         addArm(x:number, y:number, left:boolean, keyCode:number):Phaser.Sprite {
-            var arm = this.add.sprite(x, y, 'arm');
+            var arm = this.add.sprite(x, y, 'arm_left');
             this.physics.p2.enable(arm);
             arm.body.clearShapes();
-            arm.body.loadPolygon('arm', 'arm');
+            if (left) {
+                arm.body.loadPolygon('arm', 'arm_left');
+            } else {
+                arm.body.loadPolygon('arm', 'arm_right');
+            }
 
             var offsetX = arm.width*0.45;
             var offsetY = 0;
