@@ -5,6 +5,7 @@ module Pinball {
 
     export class Main extends Phaser.State {
 
+        table: Phaser.Sprite;
         gun: Phaser.Sprite;
         ball: Phaser.Sprite;
         leftArm: Phaser.Sprite;
@@ -13,8 +14,9 @@ module Pinball {
         preload() {
             this.load.path = 'assets/';
             this.load.images(['ball', 'arm_left', 'angry_face', 'confused_face', 
-                             'dead_face', 'happy_face', 'sad_face']);
+                             'dead_face', 'happy_face', 'sad_face', 'table']);
             this.load.physics('arm');
+            this.load.physics('physics');
         }
 
         create() {
@@ -22,19 +24,30 @@ module Pinball {
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
 
+            this.table = this.addTable();
+
             var thickness = 10;
-            this.addWall(0, 0, this.world.width, thickness);
-            this.addWall(0, 0, 10, this.world.height);
-            this.addWall(this.world.width-thickness, 0, thickness, this.world.height);
-            this.addWall(this.world.width-100, 0, 120, thickness, 45);
-            this.addWall(this.world.width-50, 100, thickness, this.world.height);
-            this.addWall(0, 580, 100, thickness);
-            this.addWall(350, 580, 50, thickness);
+            // this.addWall(0, 0, this.world.width, thickness);
+            // this.addWall(0, 0, 10, this.world.height);
+            // this.addWall(this.world.width-thickness, 0, thickness, this.world.height);
+            // this.addWall(this.world.width-100, 0, 120, thickness, 45);
+            // this.addWall(this.world.width-50, 100, thickness, this.world.height);
+            // this.addWall(0, 580, 100, thickness);
+            // this.addWall(350, 580, 50, thickness);
 
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, thickness, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
+        }
+
+        addTable() {
+            var table = this.add.sprite(this.world.width/2, this.world.height/2, 'table');
+            this.physics.p2.enable(table);
+            table.body.static = true;
+            table.body.clearShapes();
+            table.body.loadPolygon('physics', 'table');
+            return table;
         }
 
         addWall(x:number, y:number, w:number, h:number, a:number=0) {
