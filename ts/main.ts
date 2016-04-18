@@ -28,8 +28,8 @@ module Pinball {
 
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
-            this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
+            this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 150, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.world.centerX + 60, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
         }
 
         addTable() {
@@ -77,6 +77,23 @@ module Pinball {
             return ball;
         }
 
+        // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
+        resizePolygon(originalPhysicsKey, newPhysicsKey, shapeKey, scale) {      
+            newData = [];      
+            $.each(this.game.cache._physics[originalPhysicsKey].data, function (key, values) {        
+                $.each(values, function (key2, values2) {          
+                    shapeArray = [];          
+                    $.each(values2.shape, function (key3, values3) {
+                        shapeArray.push(values3 * scale);          
+                    });          
+                    newData.push({shape: shapeArray});
+                });      
+            });
+            var item = {};      
+            item[shapeKey] = newData;      
+            this.game.load.physics(newPhysicsKey, '', item);    
+        }
+
         addArm(x:number, y:number, left:boolean, keyCode:number):Phaser.Sprite {
             var arm = this.add.sprite(x, y, 'arm_left');
             this.physics.p2.enable(arm);
@@ -96,6 +113,9 @@ module Pinball {
             } else {
                 arm.scale.x *= -1;
             }
+            arm.scale.x *= 0.75;
+            arm.scale.y *= 0.75;
+            var b:Phaser.Physics.P2.Body = arm.body;
 
             var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
             this.physics.p2.enable(pivotPoint);
@@ -133,6 +153,7 @@ module Pinball {
 
         render() {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
+            this.game.debug.spriteInfo(this.leftArm, 32, 32);
         }
     }
 }

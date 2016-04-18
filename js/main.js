@@ -26,8 +26,8 @@ var Pinball;
             this.table = this.addTable();
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
-            this.leftArm = this.addArm(this.world.centerX - 80, this.world.height - 150, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 80, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
+            this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 150, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.world.centerX + 60, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
         };
         Main.prototype.addTable = function () {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, 'table');
@@ -87,6 +87,8 @@ var Pinball;
             else {
                 arm.scale.x *= -1;
             }
+            arm.scale.x *= 0.75;
+            arm.scale.y *= 0.75;
             var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
             this.physics.p2.enable(pivotPoint);
             pivotPoint.body.static = true;
@@ -119,6 +121,7 @@ var Pinball;
         };
         Main.prototype.render = function () {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
+            this.game.debug.spriteInfo(this.leftArm, 32, 32);
         };
         return Main;
     }(Phaser.State));
