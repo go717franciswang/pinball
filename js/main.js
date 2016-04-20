@@ -6,6 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 /// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>
 /// <reference path="./jquery.d.ts"/>
+var game;
 var Pinball;
 (function (Pinball) {
     var Main = (function (_super) {
@@ -19,14 +20,15 @@ var Pinball;
                 'dead_face', 'happy_face', 'sad_face', 'table']);
             this.load.physics('arm');
             this.load.physics('physicsData');
-            this.resizePolygon('physicsData', 'scaledPhysicsData', 'left_arm', 0.75);
-            this.resizePolygon('physicsData', 'scaledPhysicsData', 'right_arm', 0.75);
+            game = this;
         };
         Main.prototype.create = function () {
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
             this.table = this.addTable();
+            this.resizePolygon('arm', 'arm_left', 'arm_left', 0.75);
+            this.resizePolygon('arm', 'arm_right', 'arm_right', 0.75);
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 150, true, Phaser.Keyboard.LEFT);
@@ -73,7 +75,8 @@ var Pinball;
         // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
         Main.prototype.resizePolygon = function (originalPhysicsKey, newPhysicsKey, shapeKey, scale) {
             var newData = [];
-            $.each(this.game.cache._physics[originalPhysicsKey].data, function (key, values) {
+            console.log(this.cache._cache.physics);
+            $.each(this.cache._cache.physics[originalPhysicsKey].data, function (key, values) {
                 $.each(values, function (key2, values2) {
                     var shapeArray = [];
                     $.each(values2.shape, function (key3, values3) {
@@ -91,10 +94,10 @@ var Pinball;
             this.physics.p2.enable(arm);
             arm.body.clearShapes();
             if (left) {
-                arm.body.loadPolygon('arm', 'arm_left');
+                arm.body.loadPolygon('arm_left', 'arm_left');
             }
             else {
-                arm.body.loadPolygon('arm', 'arm_right');
+                arm.body.loadPolygon('arm_right', 'arm_right');
             }
             var offsetX = arm.width * 0.45;
             var offsetY = 0;
