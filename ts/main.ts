@@ -1,5 +1,6 @@
 /// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>
+/// <reference path="./jquery.d.ts"/>
 
 module Pinball {
 
@@ -17,6 +18,8 @@ module Pinball {
                              'dead_face', 'happy_face', 'sad_face', 'table']);
             this.load.physics('arm');
             this.load.physics('physicsData');
+            this.resizePolygon('physicsData', 'scaledPhysicsData', 'left_arm', 0.75);
+            this.resizePolygon('physicsData', 'scaledPhysicsData', 'right_arm', 0.75);
         }
 
         create() {
@@ -79,10 +82,10 @@ module Pinball {
 
         // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
         resizePolygon(originalPhysicsKey, newPhysicsKey, shapeKey, scale) {      
-            newData = [];      
+            var newData = [];      
             $.each(this.game.cache._physics[originalPhysicsKey].data, function (key, values) {        
                 $.each(values, function (key2, values2) {          
-                    shapeArray = [];          
+                    var shapeArray = [];          
                     $.each(values2.shape, function (key3, values3) {
                         shapeArray.push(values3 * scale);          
                     });          

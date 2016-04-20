@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 /// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>
+/// <reference path="./jquery.d.ts"/>
 var Pinball;
 (function (Pinball) {
     var Main = (function (_super) {
@@ -18,6 +19,8 @@ var Pinball;
                 'dead_face', 'happy_face', 'sad_face', 'table']);
             this.load.physics('arm');
             this.load.physics('physicsData');
+            this.resizePolygon('physicsData', 'scaledPhysicsData', 'left_arm', 0.75);
+            this.resizePolygon('physicsData', 'scaledPhysicsData', 'right_arm', 0.75);
         };
         Main.prototype.create = function () {
             this.stage.backgroundColor = 0xffffff;
@@ -67,6 +70,22 @@ var Pinball;
             ball.body.fixedRotation = true;
             return ball;
         };
+        // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
+        Main.prototype.resizePolygon = function (originalPhysicsKey, newPhysicsKey, shapeKey, scale) {
+            var newData = [];
+            $.each(this.game.cache._physics[originalPhysicsKey].data, function (key, values) {
+                $.each(values, function (key2, values2) {
+                    var shapeArray = [];
+                    $.each(values2.shape, function (key3, values3) {
+                        shapeArray.push(values3 * scale);
+                    });
+                    newData.push({ shape: shapeArray });
+                });
+            });
+            var item = {};
+            item[shapeKey] = newData;
+            this.game.load.physics(newPhysicsKey, '', item);
+        };
         Main.prototype.addArm = function (x, y, left, keyCode) {
             var arm = this.add.sprite(x, y, 'arm_left');
             this.physics.p2.enable(arm);
@@ -89,6 +108,7 @@ var Pinball;
             }
             arm.scale.x *= 0.75;
             arm.scale.y *= 0.75;
+            var b = arm.body;
             var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
             this.physics.p2.enable(pivotPoint);
             pivotPoint.body.static = true;
