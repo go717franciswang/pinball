@@ -30,8 +30,8 @@ module Pinball {
             this.table = this.addTable();
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
-            this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 150, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 60, this.world.height - 150, false, Phaser.Keyboard.RIGHT);
+            this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 130, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.world.centerX + 40, this.world.height - 130, false, Phaser.Keyboard.RIGHT);
         }
 
         addTable() {
