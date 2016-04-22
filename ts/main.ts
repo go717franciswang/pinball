@@ -12,6 +12,7 @@ module Pinball {
         ball: Phaser.Sprite;
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
+        bumpers: Phaser.Sprite[];
 
         preload() {
             this.load.path = 'assets/';
@@ -32,6 +33,11 @@ module Pinball {
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 130, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 40, this.world.height - 130, false, Phaser.Keyboard.RIGHT);
+            this.bumpers = [];
+            this.bumpers.push(this.addBumper(217, 122));
+            this.bumpers.push(this.addBumper(217, 215));
+            this.bumpers.push(this.addBumper(169, 165));
+            this.bumpers.push(this.addBumper(268, 165));
         }
 
         addTable() {
@@ -143,6 +149,14 @@ module Pinball {
             return arm;
         }
 
+        addBumper(x:number, y:number) {
+            var bumper = this.add.sprite(x, y, 'angry_face');
+            this.physics.p2.enable(bumper);
+            bumper.body.clearShapes();
+            bumper.body.static = true;
+            return bumper;
+        }
+
         update() {
             if (this.input.activePointer.isDown) {
                 this.ball.body.x = this.input.activePointer.x;
@@ -154,7 +168,8 @@ module Pinball {
 
         render() {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
-            this.game.debug.spriteInfo(this.leftArm, 32, 32);
+            //this.game.debug.spriteInfo(this.ball, 32, 32);
+            this.game.debug.pointer(this.input.activePointer);
         }
     }
 }

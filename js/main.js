@@ -31,6 +31,11 @@ var Pinball;
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 130, true, Phaser.Keyboard.LEFT);
             this.rightArm = this.addArm(this.world.centerX + 40, this.world.height - 130, false, Phaser.Keyboard.RIGHT);
+            this.bumpers = [];
+            this.bumpers.push(this.addBumper(217, 122));
+            this.bumpers.push(this.addBumper(217, 215));
+            this.bumpers.push(this.addBumper(169, 165));
+            this.bumpers.push(this.addBumper(268, 165));
         };
         Main.prototype.addTable = function () {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, 'table');
@@ -130,6 +135,13 @@ var Pinball;
             });
             return arm;
         };
+        Main.prototype.addBumper = function (x, y) {
+            var bumper = this.add.sprite(x, y, 'angry_face');
+            this.physics.p2.enable(bumper);
+            bumper.body.clearShapes();
+            bumper.body.static = true;
+            return bumper;
+        };
         Main.prototype.update = function () {
             if (this.input.activePointer.isDown) {
                 this.ball.body.x = this.input.activePointer.x;
@@ -140,7 +152,8 @@ var Pinball;
         };
         Main.prototype.render = function () {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
-            this.game.debug.spriteInfo(this.leftArm, 32, 32);
+            //this.game.debug.spriteInfo(this.ball, 32, 32);
+            this.game.debug.pointer(this.input.activePointer);
         };
         return Main;
     }(Phaser.State));
