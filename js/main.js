@@ -26,6 +26,7 @@ var Pinball;
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
+            this.physics.p2.setImpactEvents(true);
             this.table = this.addTable();
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
@@ -142,7 +143,11 @@ var Pinball;
             bumper.body.clearShapes();
             bumper.body.setCircle(bumper.width / 2);
             bumper.body.static = true;
+            bumper.body.createBodyCallback(this.ball, this.hitBumper, this);
             return bumper;
+        };
+        Main.prototype.hitBumper = function (bumperBody, ballBody) {
+            console.log('collision');
         };
         Main.prototype.update = function () {
             if (this.input.activePointer.isDown) {

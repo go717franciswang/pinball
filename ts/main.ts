@@ -27,6 +27,7 @@ module Pinball {
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
+            this.physics.p2.setImpactEvents(true);
 
             this.table = this.addTable();
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
@@ -156,7 +157,13 @@ module Pinball {
             bumper.body.clearShapes();
             bumper.body.setCircle(bumper.width/2);
             bumper.body.static = true;
+            bumper.body.createBodyCallback(this.ball, this.hitBumper, this);
+
             return bumper;
+        }
+
+        hitBumper(bumperBody, ballBody) {
+            console.log('collision');
         }
 
         update() {
