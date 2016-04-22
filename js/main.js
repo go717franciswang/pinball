@@ -27,8 +27,6 @@ var Pinball;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
             this.table = this.addTable();
-            this.resizePolygon('arm', 'arm_left', 'arm_left', 0.75);
-            this.resizePolygon('arm', 'arm_right', 'arm_right', 0.75);
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
             this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 150, true, Phaser.Keyboard.LEFT);
@@ -94,10 +92,10 @@ var Pinball;
             this.physics.p2.enable(arm);
             arm.body.clearShapes();
             if (left) {
-                arm.body.loadPolygon('arm_left', 'arm_left');
+                arm.body.loadPolygon('arm', 'arm_left');
             }
             else {
-                arm.body.loadPolygon('arm_right', 'arm_right');
+                arm.body.loadPolygon('arm', 'arm_right');
             }
             var offsetX = arm.width * 0.45;
             var offsetY = 0;
@@ -109,8 +107,6 @@ var Pinball;
             else {
                 arm.scale.x *= -1;
             }
-            arm.scale.x *= 0.75;
-            arm.scale.y *= 0.75;
             var b = arm.body;
             var pivotPoint = this.game.add.sprite(arm.x + offsetX, arm.y + offsetY);
             this.physics.p2.enable(pivotPoint);
