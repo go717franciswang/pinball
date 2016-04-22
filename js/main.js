@@ -137,8 +137,10 @@ var Pinball;
         };
         Main.prototype.addBumper = function (x, y) {
             var bumper = this.add.sprite(x, y, 'angry_face');
+            bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
+            bumper.body.setCircle(bumper.width / 2);
             bumper.body.static = true;
             return bumper;
         };
