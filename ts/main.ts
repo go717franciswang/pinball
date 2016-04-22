@@ -85,8 +85,8 @@ module Pinball {
         // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
         resizePolygon(originalPhysicsKey, newPhysicsKey, shapeKey, scale) {      
             var newData = [];      
-            console.log(this.cache._cache.physics);
-            $.each(this.cache._cache.physics[originalPhysicsKey].data, function (key, values) {        
+            var cache:any = this.cache;
+            $.each(cache._cache.physics[originalPhysicsKey].data, function (key, values) {        
                 $.each(values, function (key2, values2) {          
                     var shapeArray = [];          
                     $.each(values2.shape, function (key3, values3) {
