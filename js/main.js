@@ -16,8 +16,8 @@ var Pinball;
         }
         Main.prototype.preload = function () {
             this.load.path = 'assets/';
-            this.load.images(['ball', 'arm_left', 'angry_face', 'confused_face',
-                'dead_face', 'happy_face', 'sad_face', 'table']);
+            this.load.images(['ball', 'arm_left', 'table']);
+            this.load.spritesheet('faces', 'faces.png', 20, 20);
             this.load.physics('arm');
             this.load.physics('physicsData');
             game = this;
@@ -137,7 +137,7 @@ var Pinball;
             return arm;
         };
         Main.prototype.addBumper = function (x, y) {
-            var bumper = this.bumpers.create(x, y, 'angry_face');
+            var bumper = this.bumpers.create(x, y, 'faces', 0);
             bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
