@@ -147,7 +147,10 @@ var Pinball;
             return bumper;
         };
         Main.prototype.hitBumper = function (bumperBody, ballBody) {
-            console.log('collision');
+            var s = bumperBody.sprite;
+            //s.frame = 2;
+            var f = s.frame;
+            s.frame = (f + 1) % 4;
         };
         Main.prototype.update = function () {
             if (this.input.activePointer.isDown) {

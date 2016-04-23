@@ -163,7 +163,9 @@ module Pinball {
         }
 
         hitBumper(bumperBody, ballBody) {
-            console.log('collision');
+            var s:Phaser.Sprite = bumperBody.sprite;
+            var f:any = s.frame;
+            s.frame = (f + 1) % 4;
         }
 
         update() {
