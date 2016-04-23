@@ -165,7 +165,13 @@ module Pinball {
         hitBumper(bumperBody, ballBody) {
             var s:Phaser.Sprite = bumperBody.sprite;
             var f:any = s.frame;
-            s.frame = (f + 1) % 4;
+            s.frame = (f + 1) % 5;
+
+            var shake = this.add.tween(bumperBody).to({ x: s.x - 5 }, 50, Phaser.Easing.Bounce.InOut, false, 0, 4, true);
+            // make sure it bumps back to the original position
+            var saveX = bumperBody.x;
+            shake.onComplete.addOnce(() => { bumperBody.x = saveX; });
+            shake.start();
         }
 
         update() {

@@ -148,9 +148,13 @@ var Pinball;
         };
         Main.prototype.hitBumper = function (bumperBody, ballBody) {
             var s = bumperBody.sprite;
-            //s.frame = 2;
             var f = s.frame;
-            s.frame = (f + 1) % 4;
+            s.frame = (f + 1) % 5;
+            var shake = this.add.tween(bumperBody).to({ x: s.x - 5 }, 50, Phaser.Easing.Bounce.InOut, false, 0, 4, true);
+            // make sure it bumps back to the original position
+            var saveX = bumperBody.x;
+            shake.onComplete.addOnce(function () { bumperBody.x = saveX; });
+            shake.start();
         };
         Main.prototype.update = function () {
             if (this.input.activePointer.isDown) {
