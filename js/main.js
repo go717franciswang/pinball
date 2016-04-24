@@ -162,6 +162,8 @@ var Pinball;
             // make sure it bumps back to the original position
             shake.onComplete.add(function () { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
+            this.score += 10;
+            this.scoreText.text = 'SCORE: ' + this.score;
         };
         Main.prototype.update = function () {
             if (this.input.activePointer.isDown) {

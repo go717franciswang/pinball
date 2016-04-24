@@ -181,6 +181,9 @@ module Pinball {
             // make sure it bumps back to the original position
             shake.onComplete.add(() => { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
+
+            this.score += 10;
+            this.scoreText.text = 'SCORE: ' + this.score;
         }
 
         update() {
