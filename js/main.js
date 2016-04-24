@@ -166,10 +166,10 @@ var Pinball;
             var s = bumperBody.sprite;
             var f = s.frame;
             s.frame = (f + 1) % 5;
-            var sameBumers = [];
+            var sameBumersCount = 0;
             this.bumpers.forEach(function (bumper) {
                 if (bumper.frame == s.frame) {
-                    sameBumers.push(bumper);
+                    sameBumersCount++;
                     _this.animateBumper(bumper);
                 }
             }, this);
@@ -180,7 +180,7 @@ var Pinball;
             // make sure it bumps back to the original position
             shake.onComplete.add(function () { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
-            this.score += 10 * Math.pow(2, sameBumers.length - 1);
+            this.score += 10 * Math.pow(2, sameBumersCount - 1);
             this.scoreText.text = 'SCORE: ' + this.score;
         };
         Main.prototype.animateBumper = function (bumper) {

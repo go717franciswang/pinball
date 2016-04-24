@@ -194,10 +194,10 @@ module Pinball {
             var f:any = s.frame;
             s.frame = (f + 1) % 5;
 
-            var sameBumers = [];
+            var sameBumersCount = 0;
             this.bumpers.forEach((bumper) => {
                 if (bumper.frame == s.frame) {
-                    sameBumers.push(bumper);
+                    sameBumersCount++;
                     this.animateBumper(bumper);
                 }
             }, this);
@@ -209,7 +209,7 @@ module Pinball {
             shake.onComplete.add(() => { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
 
-            this.score += 10 * Math.pow(2, sameBumers.length-1);
+            this.score += 10 * Math.pow(2, sameBumersCount-1);
             this.scoreText.text = 'SCORE: ' + this.score;
         }
 
