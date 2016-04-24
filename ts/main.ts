@@ -8,11 +8,16 @@ module Pinball {
     export class Main extends Phaser.State {
 
         table: Phaser.Sprite;
+        tableMaterial: Phaser.Physics.P2.Material;
         gun: Phaser.Sprite;
         ball: Phaser.Sprite;
+        ballMaterial: Phaser.Physics.P2.Material;
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
         bumpers: Phaser.Group;
+        bumperMaterial: Phaser.Physics.P2.Material;
+        ballVsTableMaterial: Phaser.Physics.P2.ContactMaterial;
+        ballVsBumperMaterial: Phaser.Physics.P2.ContactMaterial;
         score: number;
         scoreText: Phaser.BitmapText;
 
@@ -32,6 +37,10 @@ module Pinball {
             this.physics.p2.gravity.y = 100;
             this.physics.p2.setImpactEvents(true);
 
+            this.ballMaterial = this.physics.p2.createMaterial('ballMaterial');
+            this.tableMaterial = this.physics.p2.createMaterial('tableMaterial');
+            this.bumperMaterial = this.physics.p2.createMaterial('bumperMaterial');
+
             this.table = this.addTable();
             this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
@@ -42,6 +51,13 @@ module Pinball {
             this.addBumper(217, 215);
             this.addBumper(169, 165);
             this.addBumper(268, 165);
+
+            this.ballVsTableMaterial = this.physics.p2.createContactMaterial(
+                this.ballMaterial, this.tableMaterial);
+            this.ballVsTableMaterial.restitution = 0.5;
+            this.ballVsBumperMaterial = this.physics.p2.createContactMaterial(
+                this.ballMaterial, this.bumperMaterial);
+            this.ballVsBumperMaterial.restitution = 2.5;
 
             this.score = 0;
             this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
@@ -54,6 +70,7 @@ module Pinball {
             table.body.clearShapes();
             table.body.loadPolygon('physicsData', 'table');
             table.body.static = true;
+            table.body.setMaterial(this.tableMaterial);
             return table;
         }
 
@@ -89,6 +106,7 @@ module Pinball {
             ball.body.clearShapes();
             ball.body.setCircle(10);
             ball.body.fixedRotation = true;
+            ball.body.setMaterial(this.ballMaterial);
 
             return ball;
         }
@@ -165,6 +183,7 @@ module Pinball {
             bumper.body.clearShapes();
             bumper.body.setCircle(bumper.width/2);
             bumper.body.static = true;
+            bumper.body.setMaterial(this.bumperMaterial);
             bumper.body.createBodyCallback(this.ball, this.hitBumper, this);
 
             return bumper;
