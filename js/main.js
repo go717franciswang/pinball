@@ -162,13 +162,16 @@ var Pinball;
             return bumper;
         };
         Main.prototype.hitBumper = function (bumperBody, ballBody) {
+            var _this = this;
             var s = bumperBody.sprite;
             var f = s.frame;
             s.frame = (f + 1) % 5;
             var sameBumers = [];
             this.bumpers.forEach(function (bumper) {
-                if (bumper.frame == s.frame)
+                if (bumper.frame == s.frame) {
                     sameBumers.push(bumper);
+                    _this.animateBumper(bumper);
+                }
             }, this);
             var offset = 5;
             if (Math.random() > 0.5)
@@ -179,6 +182,17 @@ var Pinball;
             shake.start();
             this.score += 10 * Math.pow(2, sameBumers.length - 1);
             this.scoreText.text = 'SCORE: ' + this.score;
+        };
+        Main.prototype.animateBumper = function (bumper) {
+            var copy = this.add.sprite(bumper.x, bumper.y, 'faces', bumper.frame);
+            copy.anchor.setTo(0.5);
+            var s = bumper.scale.x;
+            copy.scale.setTo(s);
+            var tween = this.add.tween(copy.scale).to({ x: s * 2, y: s * 2 }, 100, Phaser.Easing.Bounce.Out, true, 0, 0, true);
+            this.add.tween(copy).to({ alpha: 0.5 }, 100, Phaser.Easing.Bounce.Out, true, 0, 0, true);
+            tween.onComplete.add(function () {
+                copy.destroy();
+            });
         };
         Main.prototype.update = function () {
             if (this.input.activePointer.isDown) {

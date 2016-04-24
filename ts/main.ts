@@ -196,7 +196,10 @@ module Pinball {
 
             var sameBumers = [];
             this.bumpers.forEach((bumper) => {
-                if (bumper.frame == s.frame) sameBumers.push(bumper);
+                if (bumper.frame == s.frame) {
+                    sameBumers.push(bumper);
+                    this.animateBumper(bumper);
+                }
             }, this);
 
             var offset = 5;
@@ -208,6 +211,18 @@ module Pinball {
 
             this.score += 10 * Math.pow(2, sameBumers.length-1);
             this.scoreText.text = 'SCORE: ' + this.score;
+        }
+
+        animateBumper(bumper:Phaser.Sprite) {
+            var copy:Phaser.Sprite = this.add.sprite(bumper.x, bumper.y, 'faces', bumper.frame);
+            copy.anchor.setTo(0.5);
+            var s = bumper.scale.x;
+            copy.scale.setTo(s);
+            var tween = this.add.tween(copy.scale).to({ x: s*2, y: s*2 }, 100, Phaser.Easing.Bounce.Out, true, 0, 0, true);
+            this.add.tween(copy).to({ alpha: 0.5 }, 100, Phaser.Easing.Bounce.Out, true, 0, 0, true);
+            tween.onComplete.add(() => {
+                copy.destroy();
+            });
         }
 
         update() {
