@@ -20,6 +20,7 @@ var Pinball;
             this.load.spritesheet('faces', 'faces.png', 20, 20);
             this.load.physics('arm');
             this.load.physics('physicsData');
+            this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
             game = this;
         };
         Main.prototype.create = function () {
@@ -37,6 +38,9 @@ var Pinball;
             this.addBumper(217, 215);
             this.addBumper(169, 165);
             this.addBumper(268, 165);
+            this.score = 0;
+            this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
+            this.scoreText.anchor.setTo(0, 1);
         };
         Main.prototype.addTable = function () {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, 'table');
