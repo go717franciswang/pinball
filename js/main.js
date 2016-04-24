@@ -165,6 +165,11 @@ var Pinball;
             var s = bumperBody.sprite;
             var f = s.frame;
             s.frame = (f + 1) % 5;
+            var sameBumers = [];
+            this.bumpers.forEach(function (bumper) {
+                if (bumper.frame == s.frame)
+                    sameBumers.push(bumper);
+            }, this);
             var offset = 5;
             if (Math.random() > 0.5)
                 offset = -5;
@@ -172,7 +177,7 @@ var Pinball;
             // make sure it bumps back to the original position
             shake.onComplete.add(function () { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
-            this.score += 10;
+            this.score += 10 * Math.pow(2, sameBumers.length - 1);
             this.scoreText.text = 'SCORE: ' + this.score;
         };
         Main.prototype.update = function () {
