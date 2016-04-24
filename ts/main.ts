@@ -152,6 +152,7 @@ module Pinball {
 
         addBumper(x:number, y:number) {
             var bumper = this.bumpers.create(x, y, 'faces', 0);
+            bumper.originalX = x;
             bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
@@ -166,11 +167,12 @@ module Pinball {
             var s:Phaser.Sprite = bumperBody.sprite;
             var f:any = s.frame;
             s.frame = (f + 1) % 5;
+            var offset = 5;
+            if (Math.random() > 0.5) offset = -5;
 
-            var shake = this.add.tween(bumperBody).to({ x: s.x - 5 }, 50, Phaser.Easing.Bounce.InOut, false, 0, 4, true);
+            var shake = this.add.tween(bumperBody).to({ x: s.x + offset }, 50, Phaser.Easing.Bounce.InOut, false, 0, 4, true);
             // make sure it bumps back to the original position
-            var saveX = bumperBody.x;
-            shake.onComplete.addOnce(() => { bumperBody.x = saveX; });
+            shake.onComplete.add(() => { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
         }
 

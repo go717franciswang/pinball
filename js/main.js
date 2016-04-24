@@ -138,6 +138,7 @@ var Pinball;
         };
         Main.prototype.addBumper = function (x, y) {
             var bumper = this.bumpers.create(x, y, 'faces', 0);
+            bumper.originalX = x;
             bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
@@ -150,10 +151,12 @@ var Pinball;
             var s = bumperBody.sprite;
             var f = s.frame;
             s.frame = (f + 1) % 5;
-            var shake = this.add.tween(bumperBody).to({ x: s.x - 5 }, 50, Phaser.Easing.Bounce.InOut, false, 0, 4, true);
+            var offset = 5;
+            if (Math.random() > 0.5)
+                offset = -5;
+            var shake = this.add.tween(bumperBody).to({ x: s.x + offset }, 50, Phaser.Easing.Bounce.InOut, false, 0, 4, true);
             // make sure it bumps back to the original position
-            var saveX = bumperBody.x;
-            shake.onComplete.addOnce(function () { bumperBody.x = saveX; });
+            shake.onComplete.add(function () { bumperBody.x = bumperBody.sprite.originalX; });
             shake.start();
         };
         Main.prototype.update = function () {
