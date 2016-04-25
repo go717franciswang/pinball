@@ -3,7 +3,7 @@
 /// <reference path="./jquery.d.ts"/>
 
 var game;
-var DEBUG = false;
+var DEBUG = true;
 module Pinball {
 
     export class Main extends Phaser.State {
@@ -16,11 +16,14 @@ module Pinball {
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
         bumpers: Phaser.Group;
+        dropHole: Phaser.Sprite;
         bumperMaterial: Phaser.Physics.P2.Material;
         ballVsTableMaterial: Phaser.Physics.P2.ContactMaterial;
         ballVsBumperMaterial: Phaser.Physics.P2.ContactMaterial;
         score: number;
         scoreText: Phaser.BitmapText;
+        lifes: number;
+        lifesText: Phaser.BitmapText;
 
         preload() {
             this.load.path = 'assets/';
@@ -52,6 +55,7 @@ module Pinball {
             this.addBumper(217, 215);
             this.addBumper(169, 165);
             this.addBumper(268, 165);
+            this.dropHole = this.addDropHole();
 
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(
                 this.ballMaterial, this.tableMaterial);
@@ -63,6 +67,10 @@ module Pinball {
             this.score = 0;
             this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
             this.scoreText.anchor.setTo(0, 1);
+
+            this.lifes = 3;
+            this.lifesText = this.add.bitmapText(0, this.world.height-20, '04B_30', 'LIFES: 3', 12);
+            this.lifesText.anchor.setTo(0, 1);
         }
 
         addTable() {
@@ -231,6 +239,28 @@ module Pinball {
             tween.onComplete.add(() => {
                 copy.destroy();
             });
+        }
+
+        addDropHole() {
+            var dropHole = this.add.sprite(this.world.centerX, this.world.height);
+            this.physics.p2.enable(dropHole, DEBUG);
+            dropHole.body.static = true;
+            dropHole.body.clearShapes();
+            var body:Phaser.Physics.P2.Body = dropHole.body;
+            body.addRectangle(200, 20, 0, 10);
+            body.onBeginContact.add((contactWithBody) => {
+                if (contactWithBody == this.ball.body) {
+                    this.ball.destroy();
+                    this.lifes--;
+                    if (this.lifes > 0) {
+                        this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
+                        this.lifesText.text = 'LIFES: ' + this.lifes;
+                    } else {
+                        this.lifesText.text = 'GAME OVER';
+                    }
+                }
+            });
+            return dropHole;
         }
 
         update() {

@@ -7,7 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 /// <reference path="./p2.d.ts"/>
 /// <reference path="./jquery.d.ts"/>
 var game;
-var DEBUG = false;
+var DEBUG = true;
 var Pinball;
 (function (Pinball) {
     var Main = (function (_super) {
@@ -42,6 +42,7 @@ var Pinball;
             this.addBumper(217, 215);
             this.addBumper(169, 165);
             this.addBumper(268, 165);
+            this.dropHole = this.addDropHole();
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.tableMaterial);
             this.ballVsTableMaterial.restitution = 0.5;
             this.ballVsBumperMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.bumperMaterial);
@@ -49,6 +50,9 @@ var Pinball;
             this.score = 0;
             this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
             this.scoreText.anchor.setTo(0, 1);
+            this.lifes = 3;
+            this.lifesText = this.add.bitmapText(0, this.world.height - 20, '04B_30', 'LIFES: 3', 12);
+            this.lifesText.anchor.setTo(0, 1);
         };
         Main.prototype.addTable = function () {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, 'table');
@@ -198,6 +202,29 @@ var Pinball;
             tween.onComplete.add(function () {
                 copy.destroy();
             });
+        };
+        Main.prototype.addDropHole = function () {
+            var _this = this;
+            var dropHole = this.add.sprite(this.world.centerX, this.world.height);
+            this.physics.p2.enable(dropHole, DEBUG);
+            dropHole.body.static = true;
+            dropHole.body.clearShapes();
+            var body = dropHole.body;
+            body.addRectangle(200, 20, 0, 10);
+            body.onBeginContact.add(function (contactWithBody) {
+                if (contactWithBody == _this.ball.body) {
+                    _this.ball.destroy();
+                    _this.lifes--;
+                    if (_this.lifes > 0) {
+                        _this.ball = _this.addBall(_this.world.width - 20, _this.world.height - 100);
+                        _this.lifesText.text = 'LIFES: ' + _this.lifes;
+                    }
+                    else {
+                        _this.lifesText.text = 'GAME OVER';
+                    }
+                }
+            });
+            return dropHole;
         };
         Main.prototype.update = function () {
             if (DEBUG && this.input.activePointer.isDown) {
