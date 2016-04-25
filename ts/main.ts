@@ -3,6 +3,7 @@
 /// <reference path="./jquery.d.ts"/>
 
 var game;
+var DEBUG = false;
 module Pinball {
 
     export class Main extends Phaser.State {
@@ -86,12 +87,15 @@ module Pinball {
             this.physics.p2.enable(gun);
             gun.body.static = true;
             var key = this.input.keyboard.addKey(keyCode);
-            key.onDown.add(() => {
-                gun.body.y += 20;
-            });
-            key.onUp.add(() => {
-                gun.body.y -= 20;
-            });
+            var moveDown = () => { gun.body.y += 20; };
+            var moveUp = () => { gun.body.y -= 20; };
+            key.onDown.add(moveDown);
+            key.onUp.add(moveUp);
+
+            gun.inputEnabled = true;
+            gun.events.onInputDown.add(moveDown);
+            gun.events.onInputUp.add(moveUp);
+
             gun.body.onEndContact.add((contactWithBody, a2, a3, a4) => {
                 contactWithBody.applyImpulseLocal([0, 50], 0, 0);
             });
@@ -162,12 +166,14 @@ module Pinball {
             constraint.enableMotor();
 
             var key = this.input.keyboard.addKey(keyCode);
-            key.onDown.add(() => { 
-                this.setConstraintBound(constraint, -maxDegrees);
-            });
-            key.onUp.add(() => { 
-                this.setConstraintBound(constraint, maxDegrees);
-            });
+            var flipUp = () => { this.setConstraintBound(constraint, -maxDegrees); };
+            var flipDown = () => { this.setConstraintBound(constraint, maxDegrees); };
+            key.onDown.add(flipUp);
+            key.onUp.add(flipDown);
+
+            arm.inputEnabled = true;
+            arm.events.onInputDown.add(flipUp);
+            arm.events.onInputUp.add(flipDown);
 
             return arm;
         }
@@ -228,7 +234,7 @@ module Pinball {
         }
 
         update() {
-            if (this.input.activePointer.isDown) {
+            if (DEBUG && this.input.activePointer.isDown) {
                 this.ball.body.x = this.input.activePointer.x;
                 this.ball.body.y = this.input.activePointer.y;
                 this.ball.body.velocity.x = 0;
