@@ -107,6 +107,7 @@ var Pinball;
             this.game.load.physics(newPhysicsKey, '', item);
         };
         Main.prototype.addArm = function (x, y, left, keyCode) {
+            var _this = this;
             var arm = this.add.sprite(x, y, 'arm_left');
             this.physics.p2.enable(arm);
             arm.body.clearShapes();
@@ -132,22 +133,23 @@ var Pinball;
             pivotPoint.body.static = true;
             pivotPoint.body.clearCollision(true, true);
             var constraint = this.game.physics.p2.createRevoluteConstraint(arm, [offsetX, offsetY], pivotPoint, [0, 0]);
-            constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
-            constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
+            this.setConstraintBound(constraint, maxDegrees);
             constraint.upperLimitEnabled = true;
             constraint.lowerLimitEnabled = true;
             constraint.setMotorSpeed(2);
             constraint.enableMotor();
             var key = this.input.keyboard.addKey(keyCode);
             key.onDown.add(function () {
-                constraint.upperLimit = Phaser.Math.degToRad(-maxDegrees);
-                constraint.lowerLimit = Phaser.Math.degToRad(-maxDegrees);
+                _this.setConstraintBound(constraint, -maxDegrees);
             });
             key.onUp.add(function () {
-                constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
-                constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
+                _this.setConstraintBound(constraint, maxDegrees);
             });
             return arm;
+        };
+        Main.prototype.setConstraintBound = function (constraint, maxDegrees) {
+            constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
+            constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
         };
         Main.prototype.addBumper = function (x, y) {
             var bumper = this.bumpers.create(x, y, 'faces', 0);

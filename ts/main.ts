@@ -155,8 +155,7 @@ module Pinball {
             pivotPoint.body.static = true;
             pivotPoint.body.clearCollision(true, true);
             var constraint = this.game.physics.p2.createRevoluteConstraint(arm, [offsetX, offsetY], pivotPoint, [0, 0]);
-            constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
-            constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
+            this.setConstraintBound(constraint, maxDegrees);
             constraint.upperLimitEnabled = true;
             constraint.lowerLimitEnabled = true;
             constraint.setMotorSpeed(2);
@@ -164,15 +163,18 @@ module Pinball {
 
             var key = this.input.keyboard.addKey(keyCode);
             key.onDown.add(() => { 
-                constraint.upperLimit = Phaser.Math.degToRad(-maxDegrees);
-                constraint.lowerLimit = Phaser.Math.degToRad(-maxDegrees);
+                this.setConstraintBound(constraint, -maxDegrees);
             });
             key.onUp.add(() => { 
-                constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
-                constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
+                this.setConstraintBound(constraint, maxDegrees);
             });
 
             return arm;
+        }
+
+        setConstraintBound(constraint, maxDegrees) {
+            constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
+            constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
         }
 
         addBumper(x:number, y:number) {
