@@ -1,0 +1,10 @@
+{
+    "boards": [
+        {
+            "name": "Test"
+        },
+        {
+            "name": "Classic"
+        }
+    ]
+}

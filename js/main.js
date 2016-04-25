@@ -4,6 +4,43 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /// <reference path="./phaser.d.ts"/>
+var Pinball;
+(function (Pinball) {
+    var Menu = (function (_super) {
+        __extends(Menu, _super);
+        function Menu() {
+            _super.apply(this, arguments);
+        }
+        Menu.prototype.preload = function () {
+            this.load.path = 'assets/';
+            this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
+            this.load.json('gameSetting', 'gameSetting.json');
+        };
+        Menu.prototype.create = function () {
+            var _this = this;
+            this.setting = this.cache.getJSON('gameSetting');
+            this.stage.backgroundColor = 0xc0c0c0;
+            this.buttons = this.add.group();
+            var spacing = 50;
+            this.setting['boards'].forEach(function (boardSetting, idx) {
+                var callback = function () {
+                    console.log(boardSetting);
+                };
+                var x = _this.world.centerX;
+                var y = idx * spacing;
+                var text = _this.add.bitmapText(x, y, '04B_30', boardSetting['name']);
+                text.anchor.setTo(0.5);
+                text.inputEnabled = true;
+                text.events.onInputUp.add(callback);
+                _this.buttons.addChild(text);
+            });
+            this.buttons.y = this.world.centerY - spacing * this.setting['boards'].length / 2;
+        };
+        return Menu;
+    }(Phaser.State));
+    Pinball.Menu = Menu;
+})(Pinball || (Pinball = {}));
+/// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>
 /// <reference path="./jquery.d.ts"/>
 var game;

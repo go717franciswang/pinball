@@ -3,6 +3,7 @@
         "outFile": "../js/main.js"
     },
     "files": [
+        "menu.ts",
         "main.ts"
     ]
 }
