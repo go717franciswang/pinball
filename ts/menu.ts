@@ -9,6 +9,7 @@ module Pinball {
             this.load.path = 'assets/';
             this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
             this.load.json('gameSetting', 'gameSetting.json');
+            this.load.image('preloadBar', 'loader.png');
         }
 
         create() {
@@ -18,7 +19,7 @@ module Pinball {
             var spacing = 50;
             this.setting['boards'].forEach((boardSetting, idx) => {
                 var callback = () => { 
-                    console.log(boardSetting); 
+                    this.game.state.start('Loader', true, false, boardSetting);
                 };
                 var x = this.world.centerX;
                 var y = idx*spacing;

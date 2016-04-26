@@ -15,6 +15,7 @@ var Pinball;
             this.load.path = 'assets/';
             this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
             this.load.json('gameSetting', 'gameSetting.json');
+            this.load.image('preloadBar', 'loader.png');
         };
         Menu.prototype.create = function () {
             var _this = this;
@@ -24,7 +25,7 @@ var Pinball;
             var spacing = 50;
             this.setting['boards'].forEach(function (boardSetting, idx) {
                 var callback = function () {
-                    console.log(boardSetting);
+                    _this.game.state.start('Loader', true, false, boardSetting);
                 };
                 var x = _this.world.centerX;
                 var y = idx * spacing;
@@ -39,6 +40,49 @@ var Pinball;
         return Menu;
     }(Phaser.State));
     Pinball.Menu = Menu;
+})(Pinball || (Pinball = {}));
+/// <reference path="./phaser.d.ts"/>
+var Pinball;
+(function (Pinball) {
+    var Loader = (function (_super) {
+        __extends(Loader, _super);
+        function Loader() {
+            _super.apply(this, arguments);
+        }
+        Loader.prototype.init = function (boardSetting) {
+            this.boardSetting = boardSetting;
+        };
+        Loader.prototype.preload = function () {
+            var _this = this;
+            this.load.path = 'assets/';
+            this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloadBar');
+            this.preloadBar.anchor.setTo(0.5);
+            this.load.setPreloadSprite(this.preloadBar);
+            console.log(this.boardSetting);
+            this.boardSetting.assets.forEach(function (a) {
+                switch (a.type) {
+                    case "images":
+                        _this.load.images(a.files);
+                        break;
+                    case "spritesheet":
+                        _this.load.spritesheet(a.key, a.file, a.w, a.h);
+                        break;
+                    case "physics":
+                        _this.load.physics(a.file);
+                        break;
+                }
+            });
+        };
+        Loader.prototype.create = function () {
+            var _this = this;
+            var tween = this.add.tween(this.preloadBar).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+            tween.onComplete.add(function () {
+                _this.game.state.start('Main', true, false, _this.boardSetting);
+            }, this);
+        };
+        return Loader;
+    }(Phaser.State));
+    Pinball.Loader = Loader;
 })(Pinball || (Pinball = {}));
 /// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>

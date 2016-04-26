@@ -4,6 +4,7 @@
     },
     "files": [
         "menu.ts",
+        "loader.ts",
         "main.ts"
     ]
 }
