@@ -23,43 +23,36 @@
                     "file": "physicsData"
                 }
             ],
-            "components": [
-                {
-                    "component": "table",
-                    "key": "table",
-                    "physics": "physicsData"
-                },
-                {
-                    "component": "ball",
-                    "key": "ball",
-                    "x": 430,
-                    "y": 700
-                },
-                {
-                    "component": "arm_left",
-                    "key": "arm_left",
-                    "x": 135,
-                    "y": 670,
-                    "physics": "arm"
-                },
-                {
-                    "component": "arm_right",
-                    "key": "arm_left",
-                    "x": 265,
-                    "y": 670,
-                    "physics": "arm"
-                },
-                {
-                    "component": "bumpers",
-                    "key": "faces",
-                    "positions": [
-                        { "x": 217, "y": 122 },
-                        { "x": 217, "y": 215 },
-                        { "x": 169, "y": 165 },
-                        { "x": 268, "y": 165 }
-                    ]
-                }
-            ]
+            "table": {
+                "key": "table",
+                "physics": "physicsData"
+            },
+            "ball": {
+                "key": "ball",
+                "x": 430,
+                "y": 700
+            },
+            "arm_left": {
+                "key": "arm_left",
+                "x": 135,
+                "y": 670,
+                "physics": "arm"
+            },
+            "arm_right": {
+                "key": "arm_left",
+                "x": 265,
+                "y": 670,
+                "physics": "arm"
+            },
+            "bumpers": {
+                "key": "faces",
+                "positions": [
+                    { "x": 217, "y": 122 },
+                    { "x": 217, "y": 215 },
+                    { "x": 169, "y": 165 },
+                    { "x": 268, "y": 165 }
+                ]
+            }
         },
         {
             "name": "Classic"

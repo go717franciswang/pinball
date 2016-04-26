@@ -107,28 +107,13 @@ var Pinball;
             this.ballMaterial = this.physics.p2.createMaterial('ballMaterial');
             this.tableMaterial = this.physics.p2.createMaterial('tableMaterial');
             this.bumperMaterial = this.physics.p2.createMaterial('bumperMaterial');
-            this.boardSetting.components.forEach(function (c) {
-                switch (c.component) {
-                    case "table":
-                        _this.table = _this.addTable(c);
-                        break;
-                    case "ball":
-                        _this.ballStartingPos = c;
-                        _this.ball = _this.addBall(c);
-                        break;
-                    case "arm_left":
-                        _this.leftArm = _this.addArm(c, true, Phaser.Keyboard.LEFT);
-                        break;
-                    case "arm_right":
-                        _this.rightArm = _this.addArm(c, false, Phaser.Keyboard.RIGHT);
-                        break;
-                    case "bumpers":
-                        _this.bumpers = _this.add.physicsGroup(Phaser.Physics.P2JS);
-                        c.positions.forEach(function (p) {
-                            _this.addBumper(p, c);
-                        });
-                        break;
-                }
+            this.table = this.addTable(this.boardSetting.table);
+            this.ball = this.addBall(this.boardSetting.ball);
+            this.leftArm = this.addArm(this.boardSetting.arm_left, true, Phaser.Keyboard.LEFT);
+            this.rightArm = this.addArm(this.boardSetting.arm_right, false, Phaser.Keyboard.RIGHT);
+            this.bumpers = this.add.physicsGroup(Phaser.Physics.P2JS);
+            this.boardSetting.bumpers.positions.forEach(function (p) {
+                _this.addBumper(p);
             });
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
             this.dropHole = this.addDropHole();
@@ -230,8 +215,8 @@ var Pinball;
             constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
             constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
         };
-        Main.prototype.addBumper = function (p, c) {
-            var bumper = this.bumpers.create(p.x, p.y, c.key, 0);
+        Main.prototype.addBumper = function (p) {
+            var bumper = this.bumpers.create(p.x, p.y, this.boardSetting.bumpers.key, 0);
             bumper.originalX = p.x;
             bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
@@ -288,7 +273,7 @@ var Pinball;
                     _this.ball.destroy();
                     _this.lifes--;
                     if (_this.lifes > 0) {
-                        _this.ball = _this.addBall(_this.ballStartingPos);
+                        _this.ball = _this.addBall(_this.boardSetting.ball);
                         _this.lifesText.text = 'LIFES: ' + _this.lifes;
                     }
                     else {
