@@ -25,6 +25,11 @@
             ],
             "components": [
                 {
+                    "component": "table",
+                    "key": "table",
+                    "physics": "physicsData"
+                },
+                {
                     "component": "ball",
                     "key": "ball",
                     "x": 430,
@@ -33,21 +38,16 @@
                 {
                     "component": "arm_left",
                     "key": "arm_left",
-                    "x": 360,
+                    "x": 135,
                     "y": 670,
                     "physics": "arm"
                 },
                 {
                     "component": "arm_right",
                     "key": "arm_left",
-                    "x": 490,
+                    "x": 265,
                     "y": 670,
                     "physics": "arm"
-                },
-                {
-                    "component": "table",
-                    "key": "table",
-                    "physics": "physicsData"
                 },
                 {
                     "component": "bumpers",

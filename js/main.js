@@ -58,7 +58,6 @@ var Pinball;
             this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloadBar');
             this.preloadBar.anchor.setTo(0.5);
             this.load.setPreloadSprite(this.preloadBar);
-            console.log(this.boardSetting);
             this.boardSetting.assets.forEach(function (a) {
                 switch (a.type) {
                     case "images":
@@ -96,16 +95,11 @@ var Pinball;
         function Main() {
             _super.apply(this, arguments);
         }
-        Main.prototype.preload = function () {
-            this.load.path = 'assets/';
-            this.load.images(['ball', 'arm_left', 'table']);
-            this.load.spritesheet('faces', 'faces.png', 20, 20);
-            this.load.physics('arm');
-            this.load.physics('physicsData');
-            this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
-            game = this;
+        Main.prototype.init = function (boardSetting) {
+            this.boardSetting = boardSetting;
         };
         Main.prototype.create = function () {
+            var _this = this;
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
@@ -113,16 +107,30 @@ var Pinball;
             this.ballMaterial = this.physics.p2.createMaterial('ballMaterial');
             this.tableMaterial = this.physics.p2.createMaterial('tableMaterial');
             this.bumperMaterial = this.physics.p2.createMaterial('bumperMaterial');
-            this.table = this.addTable();
-            this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
+            this.boardSetting.components.forEach(function (c) {
+                switch (c.component) {
+                    case "table":
+                        _this.table = _this.addTable(c);
+                        break;
+                    case "ball":
+                        _this.ballStartingPos = c;
+                        _this.ball = _this.addBall(c);
+                        break;
+                    case "arm_left":
+                        _this.leftArm = _this.addArm(c, true, Phaser.Keyboard.LEFT);
+                        break;
+                    case "arm_right":
+                        _this.rightArm = _this.addArm(c, false, Phaser.Keyboard.RIGHT);
+                        break;
+                    case "bumpers":
+                        _this.bumpers = _this.add.physicsGroup(Phaser.Physics.P2JS);
+                        c.positions.forEach(function (p) {
+                            _this.addBumper(p, c);
+                        });
+                        break;
+                }
+            });
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
-            this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 130, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 40, this.world.height - 130, false, Phaser.Keyboard.RIGHT);
-            this.bumpers = this.add.physicsGroup(Phaser.Physics.P2JS);
-            this.addBumper(217, 122);
-            this.addBumper(217, 215);
-            this.addBumper(169, 165);
-            this.addBumper(268, 165);
             this.dropHole = this.addDropHole();
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.tableMaterial);
             this.ballVsTableMaterial.restitution = 0.5;
@@ -135,11 +143,11 @@ var Pinball;
             this.lifesText = this.add.bitmapText(0, this.world.height - 20, '04B_30', 'LIFES: 3', 12);
             this.lifesText.anchor.setTo(0, 1);
         };
-        Main.prototype.addTable = function () {
-            var table = this.add.sprite(this.world.width / 2, this.world.height / 2, 'table');
+        Main.prototype.addTable = function (c) {
+            var table = this.add.sprite(this.world.width / 2, this.world.height / 2, c.key);
             this.physics.p2.enable(table);
             table.body.clearShapes();
-            table.body.loadPolygon('physicsData', 'table');
+            table.body.loadPolygon(c.physics, 'table');
             table.body.static = true;
             table.body.setMaterial(this.tableMaterial);
             return table;
@@ -166,8 +174,8 @@ var Pinball;
             });
             return gun;
         };
-        Main.prototype.addBall = function (x, y) {
-            var ball = this.add.sprite(x, y, 'ball');
+        Main.prototype.addBall = function (c) {
+            var ball = this.add.sprite(c.x, c.y, c.key);
             ball.scale.set(2);
             this.physics.p2.enable(ball);
             ball.body.clearShapes();
@@ -176,33 +184,16 @@ var Pinball;
             ball.body.setMaterial(this.ballMaterial);
             return ball;
         };
-        // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
-        Main.prototype.resizePolygon = function (originalPhysicsKey, newPhysicsKey, shapeKey, scale) {
-            var newData = [];
-            var cache = this.cache;
-            $.each(cache._cache.physics[originalPhysicsKey].data, function (key, values) {
-                $.each(values, function (key2, values2) {
-                    var shapeArray = [];
-                    $.each(values2.shape, function (key3, values3) {
-                        shapeArray.push(values3 * scale);
-                    });
-                    newData.push({ shape: shapeArray });
-                });
-            });
-            var item = {};
-            item[shapeKey] = newData;
-            this.game.load.physics(newPhysicsKey, '', item);
-        };
-        Main.prototype.addArm = function (x, y, left, keyCode) {
+        Main.prototype.addArm = function (c, left, keyCode) {
             var _this = this;
-            var arm = this.add.sprite(x, y, 'arm_left');
+            var arm = this.add.sprite(c.x, c.y, c.key);
             this.physics.p2.enable(arm);
             arm.body.clearShapes();
             if (left) {
-                arm.body.loadPolygon('arm', 'arm_left');
+                arm.body.loadPolygon(c.physics, 'arm_left');
             }
             else {
-                arm.body.loadPolygon('arm', 'arm_right');
+                arm.body.loadPolygon(c.physics, 'arm_right');
             }
             var offsetX = arm.width * 0.45;
             var offsetY = 0;
@@ -239,9 +230,9 @@ var Pinball;
             constraint.upperLimit = Phaser.Math.degToRad(maxDegrees);
             constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
         };
-        Main.prototype.addBumper = function (x, y) {
-            var bumper = this.bumpers.create(x, y, 'faces', 0);
-            bumper.originalX = x;
+        Main.prototype.addBumper = function (p, c) {
+            var bumper = this.bumpers.create(p.x, p.y, c.key, 0);
+            bumper.originalX = c.x;
             bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
@@ -297,7 +288,7 @@ var Pinball;
                     _this.ball.destroy();
                     _this.lifes--;
                     if (_this.lifes > 0) {
-                        _this.ball = _this.addBall(_this.world.width - 20, _this.world.height - 100);
+                        _this.ball = _this.addBall(_this.ballStartingPos);
                         _this.lifesText.text = 'LIFES: ' + _this.lifes;
                     }
                     else {

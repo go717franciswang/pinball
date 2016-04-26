@@ -8,10 +8,12 @@ module Pinball {
 
     export class Main extends Phaser.State {
 
+        boardSetting: any;
         table: Phaser.Sprite;
         tableMaterial: Phaser.Physics.P2.Material;
         gun: Phaser.Sprite;
         ball: Phaser.Sprite;
+        ballStartingPos: any;
         ballMaterial: Phaser.Physics.P2.Material;
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
@@ -25,14 +27,8 @@ module Pinball {
         lifes: number;
         lifesText: Phaser.BitmapText;
 
-        preload() {
-            this.load.path = 'assets/';
-            this.load.images(['ball', 'arm_left', 'table']);
-            this.load.spritesheet('faces', 'faces.png', 20, 20);
-            this.load.physics('arm');
-            this.load.physics('physicsData');
-            this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
-            game = this;
+        init(boardSetting) {
+            this.boardSetting = boardSetting;
         }
 
         create() {
@@ -45,16 +41,30 @@ module Pinball {
             this.tableMaterial = this.physics.p2.createMaterial('tableMaterial');
             this.bumperMaterial = this.physics.p2.createMaterial('bumperMaterial');
 
-            this.table = this.addTable();
-            this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
+            this.boardSetting.components.forEach((c) => {
+                switch (c.component) {
+                    case "table":
+                        this.table = this.addTable(c);
+                    break;
+                    case "ball":
+                        this.ballStartingPos = c;
+                        this.ball = this.addBall(c);
+                    break;
+                    case "arm_left":
+                        this.leftArm = this.addArm(c, true, Phaser.Keyboard.LEFT);
+                    break;
+                    case "arm_right":
+                        this.rightArm = this.addArm(c, false, Phaser.Keyboard.RIGHT);
+                    break;
+                    case "bumpers":
+                        this.bumpers = this.add.physicsGroup(Phaser.Physics.P2JS);
+                        c.positions.forEach((p) => {
+                            this.addBumper(p, c);
+                        });
+                    break;
+                }
+            });
             this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
-            this.leftArm = this.addArm(this.world.centerX - 90, this.world.height - 130, true, Phaser.Keyboard.LEFT);
-            this.rightArm = this.addArm(this.world.centerX + 40, this.world.height - 130, false, Phaser.Keyboard.RIGHT);
-            this.bumpers = this.add.physicsGroup(Phaser.Physics.P2JS);
-            this.addBumper(217, 122);
-            this.addBumper(217, 215);
-            this.addBumper(169, 165);
-            this.addBumper(268, 165);
             this.dropHole = this.addDropHole();
 
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(
@@ -73,11 +83,11 @@ module Pinball {
             this.lifesText.anchor.setTo(0, 1);
         }
 
-        addTable() {
-            var table = this.add.sprite(this.world.width/2, this.world.height/2, 'table');
+        addTable(c) {
+            var table = this.add.sprite(this.world.width/2, this.world.height/2, c.key);
             this.physics.p2.enable(table);
             table.body.clearShapes();
-            table.body.loadPolygon('physicsData', 'table');
+            table.body.loadPolygon(c.physics, 'table');
             table.body.static = true;
             table.body.setMaterial(this.tableMaterial);
             return table;
@@ -111,8 +121,8 @@ module Pinball {
             return gun;
         }
 
-        addBall(x:number, y:number):Phaser.Sprite {
-            var ball = this.add.sprite(x, y, 'ball');
+        addBall(c):Phaser.Sprite {
+            var ball = this.add.sprite(c.x, c.y, c.key);
             ball.scale.set(2);
             this.physics.p2.enable(ball);
             ball.body.clearShapes();
@@ -123,32 +133,14 @@ module Pinball {
             return ball;
         }
 
-        // taken from http://www.html5gamedevs.com/topic/4795-it-is-possible-to-scale-the-polygon-with-p2-physics/
-        resizePolygon(originalPhysicsKey, newPhysicsKey, shapeKey, scale) {      
-            var newData = [];      
-            var cache:any = this.cache;
-            $.each(cache._cache.physics[originalPhysicsKey].data, function (key, values) {        
-                $.each(values, function (key2, values2) {          
-                    var shapeArray = [];          
-                    $.each(values2.shape, function (key3, values3) {
-                        shapeArray.push(values3 * scale);          
-                    });          
-                    newData.push({shape: shapeArray});
-                });      
-            });
-            var item = {};      
-            item[shapeKey] = newData;      
-            this.game.load.physics(newPhysicsKey, '', item);    
-        }
-
-        addArm(x:number, y:number, left:boolean, keyCode:number):Phaser.Sprite {
-            var arm = this.add.sprite(x, y, 'arm_left');
+        addArm(c, left:boolean, keyCode:number):Phaser.Sprite {
+            var arm = this.add.sprite(c.x, c.y, c.key);
             this.physics.p2.enable(arm);
             arm.body.clearShapes();
             if (left) {
-                arm.body.loadPolygon('arm', 'arm_left');
+                arm.body.loadPolygon(c.physics, 'arm_left');
             } else {
-                arm.body.loadPolygon('arm', 'arm_right');
+                arm.body.loadPolygon(c.physics, 'arm_right');
             }
 
             var offsetX = arm.width*0.45;
@@ -191,9 +183,9 @@ module Pinball {
             constraint.lowerLimit = Phaser.Math.degToRad(maxDegrees);
         }
 
-        addBumper(x:number, y:number) {
-            var bumper = this.bumpers.create(x, y, 'faces', 0);
-            bumper.originalX = x;
+        addBumper(p, c) {
+            var bumper = this.bumpers.create(p.x, p.y, c.key, 0);
+            bumper.originalX = c.x;
             bumper.scale.setTo(2);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
@@ -253,7 +245,7 @@ module Pinball {
                     this.ball.destroy();
                     this.lifes--;
                     if (this.lifes > 0) {
-                        this.ball = this.addBall(this.world.width - 20, this.world.height - 100);
+                        this.ball = this.addBall(this.ballStartingPos);
                         this.lifesText.text = 'LIFES: ' + this.lifes;
                     } else {
                         this.lifesText.text = 'GAME OVER';
