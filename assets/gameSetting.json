@@ -55,7 +55,58 @@
             }
         },
         {
-            "name": "Classic"
+            "name": "Classic",
+            "assets": [
+                {
+                    "type": "images",
+                    "files": ["ball", "arm_left", "table2"]
+                },
+                {
+                    "type": "spritesheet",
+                    "key": "faces",
+                    "file": "faces.png",
+                    "w": 20,
+                    "h": 20
+                },
+                {
+                    "type": "physics",
+                    "file": "arm"
+                },
+                {
+                    "type": "physics",
+                    "file": "physicsData"
+                }
+            ],
+            "table": {
+                "key": "table2",
+                "physics": "physicsData"
+            },
+            "ball": {
+                "key": "ball",
+                "x": 430,
+                "y": 700
+            },
+            "arm_left": {
+                "key": "arm_left",
+                "x": 135,
+                "y": 670,
+                "physics": "arm"
+            },
+            "arm_right": {
+                "key": "arm_left",
+                "x": 265,
+                "y": 670,
+                "physics": "arm"
+            },
+            "bumpers": {
+                "key": "faces",
+                "positions": [
+                    { "x": 217, "y": 122 },
+                    { "x": 217, "y": 215 },
+                    { "x": 169, "y": 165 },
+                    { "x": 268, "y": 165 }
+                ]
+            }
         }
     ]
 }
