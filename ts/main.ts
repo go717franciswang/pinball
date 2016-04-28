@@ -226,10 +226,12 @@ module Pinball {
             body.addRectangle(200, 20, 0, 10);
             body.onBeginContact.add((contactWithBody) => {
                 if (contactWithBody == this.ball.body) {
-                    this.ball.destroy();
+                    this.ball.visible = false;
                     this.lifes--;
                     if (this.lifes > 0) {
-                        this.ball = this.addBall(this.boardSetting.ball);
+                        this.ball.visible = true;
+                        this.ball.body.x = this.boardSetting.ball.x;
+                        this.ball.body.y = this.boardSetting.ball.y;
                         this.lifesText.text = 'LIFES: ' + this.lifes;
                     } else {
                         this.lifesText.text = 'GAME OVER';

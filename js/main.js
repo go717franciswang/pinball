@@ -270,10 +270,14 @@ var Pinball;
             body.addRectangle(200, 20, 0, 10);
             body.onBeginContact.add(function (contactWithBody) {
                 if (contactWithBody == _this.ball.body) {
-                    _this.ball.destroy();
+                    // this.ball.destroy();
+                    _this.ball.visible = false;
                     _this.lifes--;
                     if (_this.lifes > 0) {
-                        _this.ball = _this.addBall(_this.boardSetting.ball);
+                        _this.ball.visible = true;
+                        _this.ball.body.x = _this.boardSetting.ball.x;
+                        _this.ball.body.y = _this.boardSetting.ball.y;
+                        // this.ball = this.addBall(this.boardSetting.ball);
                         _this.lifesText.text = 'LIFES: ' + _this.lifes;
                     }
                     else {
