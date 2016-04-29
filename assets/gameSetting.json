@@ -36,12 +36,14 @@
                 "key": "arm_left",
                 "x": 135,
                 "y": 670,
+                "maxDegrees": 45,
                 "physics": "arm"
             },
             "arm_right": {
                 "key": "arm_left",
                 "x": 265,
                 "y": 670,
+                "maxDegrees": 45,
                 "physics": "arm"
             },
             "bumpers": {
@@ -60,7 +62,7 @@
             "assets": [
                 {
                     "type": "images",
-                    "files": ["ball", "arm_left", "table2"]
+                    "files": ["ball", "arm_left2", "table2"]
                 },
                 {
                     "type": "spritesheet",
@@ -71,16 +73,12 @@
                 },
                 {
                     "type": "physics",
-                    "file": "arm"
-                },
-                {
-                    "type": "physics",
-                    "file": "physicsData"
+                    "file": "physicsData2"
                 }
             ],
             "table": {
                 "key": "table2",
-                "physics": "physicsData"
+                "physics": "physicsData2"
             },
             "ball": {
                 "key": "ball",
@@ -88,16 +86,18 @@
                 "y": 700
             },
             "arm_left": {
-                "key": "arm_left",
-                "x": 135,
-                "y": 670,
-                "physics": "arm"
+                "key": "arm_left2",
+                "x": 155,
+                "y": 675,
+                "maxDegrees": 35,
+                "physics": "physicsData2"
             },
             "arm_right": {
-                "key": "arm_left",
+                "key": "arm_left2",
                 "x": 265,
-                "y": 670,
-                "physics": "arm"
+                "y": 675,
+                "maxDegrees": 35,
+                "physics": "physicsData2"
             },
             "bumpers": {
                 "key": "faces",

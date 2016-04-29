@@ -129,7 +129,7 @@ module Pinball {
 
             var offsetX = arm.width*0.45;
             var offsetY = 0;
-            var maxDegrees = 45;
+            var maxDegrees = c.maxDegrees;
             if (left) { 
                 offsetX = -offsetX;
                 maxDegrees = -maxDegrees;
