@@ -64,9 +64,9 @@
                 {
                     "type": "spritesheet",
                     "key": "faces",
-                    "file": "faces.png",
-                    "w": 20,
-                    "h": 20
+                    "file": "faces2.png",
+                    "w": 65,
+                    "h": 65
                 },
                 {
                     "type": "physics",
