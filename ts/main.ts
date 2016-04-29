@@ -170,7 +170,7 @@ module Pinball {
         addBumper(p) {
             var bumper = this.bumpers.create(p.x, p.y, this.boardSetting.bumpers.key, 0);
             bumper.originalX = p.x;
-            bumper.scale.setTo(2);
+            bumper.scale.setTo(this.boardSetting.bumpers.scale);
             this.physics.p2.enable(bumper);
             bumper.body.clearShapes();
             bumper.body.setCircle(bumper.width/2);
