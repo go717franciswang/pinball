@@ -3,7 +3,6 @@
 /// <reference path="./jquery.d.ts"/>
 
 var game;
-var DEBUG = true;
 module Pinball {
 
     export class Main extends Phaser.State {
@@ -219,11 +218,12 @@ module Pinball {
 
         addDropHole() {
             var dropHole = this.add.sprite(this.world.centerX, this.world.height);
-            this.physics.p2.enable(dropHole, DEBUG);
+            this.physics.p2.enable(dropHole, this.boardSetting.debug);
             dropHole.body.static = true;
             dropHole.body.clearShapes();
             var body:Phaser.Physics.P2.Body = dropHole.body;
-            body.addRectangle(200, 20, 0, 10);
+            var c = this.boardSetting.dropHole;
+            body.addRectangle(c.w, c.h, 0, c.yOffset);
             body.onBeginContact.add((contactWithBody) => {
                 if (contactWithBody == this.ball.body) {
                     this.ball.visible = false;
@@ -242,7 +242,7 @@ module Pinball {
         }
 
         update() {
-            if (DEBUG && this.input.activePointer.isDown) {
+            if (this.boardSetting.debug && this.input.activePointer.isDown) {
                 this.ball.body.x = this.input.activePointer.x;
                 this.ball.body.y = this.input.activePointer.y;
                 this.ball.body.velocity.x = 0;
@@ -253,7 +253,9 @@ module Pinball {
         render() {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
             //this.game.debug.spriteInfo(this.ball, 32, 32);
-            this.game.debug.pointer(this.input.activePointer);
+            if (this.boardSetting.debug) {
+                this.game.debug.pointer(this.input.activePointer);
+            }
         }
     }
 }

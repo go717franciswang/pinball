@@ -87,7 +87,6 @@ var Pinball;
 /// <reference path="./p2.d.ts"/>
 /// <reference path="./jquery.d.ts"/>
 var game;
-var DEBUG = true;
 var Pinball;
 (function (Pinball) {
     var Main = (function (_super) {
@@ -263,11 +262,12 @@ var Pinball;
         Main.prototype.addDropHole = function () {
             var _this = this;
             var dropHole = this.add.sprite(this.world.centerX, this.world.height);
-            this.physics.p2.enable(dropHole, DEBUG);
+            this.physics.p2.enable(dropHole, this.boardSetting.debug);
             dropHole.body.static = true;
             dropHole.body.clearShapes();
             var body = dropHole.body;
-            body.addRectangle(200, 20, 0, 10);
+            var c = this.boardSetting.dropHole;
+            body.addRectangle(c.w, c.h, 0, c.yOffset);
             body.onBeginContact.add(function (contactWithBody) {
                 if (contactWithBody == _this.ball.body) {
                     _this.ball.visible = false;
@@ -286,7 +286,7 @@ var Pinball;
             return dropHole;
         };
         Main.prototype.update = function () {
-            if (DEBUG && this.input.activePointer.isDown) {
+            if (this.boardSetting.debug && this.input.activePointer.isDown) {
                 this.ball.body.x = this.input.activePointer.x;
                 this.ball.body.y = this.input.activePointer.y;
                 this.ball.body.velocity.x = 0;
@@ -296,7 +296,9 @@ var Pinball;
         Main.prototype.render = function () {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
             //this.game.debug.spriteInfo(this.ball, 32, 32);
-            this.game.debug.pointer(this.input.activePointer);
+            if (this.boardSetting.debug) {
+                this.game.debug.pointer(this.input.activePointer);
+            }
         };
         return Main;
     }(Phaser.State));
