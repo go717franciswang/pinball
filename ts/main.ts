@@ -47,7 +47,7 @@ module Pinball {
             this.boardSetting.bumpers.positions.forEach((p) => {
                 this.addBumper(p);
             });
-            this.gun = this.addGun(this.world.width - 30, this.world.height - 50, 10, 50, Phaser.Keyboard.SPACEBAR);
+            this.gun = this.addGun(this.boardSetting.gun, Phaser.Keyboard.SPACEBAR);
             this.dropHole = this.addDropHole();
 
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(
@@ -76,15 +76,15 @@ module Pinball {
             return table;
         }
 
-        addGun(x:number, y:number, w:number, h:number, keyCode:number) {
+        addGun(c, keyCode:number) {
             var rect = this.make.graphics(0, 0);
             rect.lineStyle(8, 0xFF0000, 0.8);
             rect.beginFill(0xFF700B, 1);
 
-            rect.drawRect(-50, -50, w, h);
+            rect.drawRect(-50, -50, c.w, c.h);
             rect.endFill();
 
-            var gun = this.add.sprite(x+w/2, y+h/2, rect.generateTexture());
+            var gun = this.add.sprite(c.x+c.w/2, c.y+c.h/2, rect.generateTexture());
             this.physics.p2.enable(gun);
             gun.body.static = true;
             var key = this.input.keyboard.addKey(keyCode);
