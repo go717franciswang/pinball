@@ -184,6 +184,7 @@ module Pinball {
             var s:Phaser.Sprite = bumperBody.sprite;
             var f:any = s.frame;
             s.frame = (f + 1) % 5;
+            this.add.audio('sound' + ((f+1)%5).toString()).play();
 
             var sameBumersCount = 0;
             this.bumpers.forEach((bumper) => {

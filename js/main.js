@@ -234,6 +234,8 @@ var Pinball;
             var s = bumperBody.sprite;
             var f = s.frame;
             s.frame = (f + 1) % 5;
+            console.log('playing ' + 'sound' + ((f + 1) % 5).toString());
+            this.add.audio('sound' + ((f + 1) % 5).toString()).play();
             var sameBumersCount = 0;
             this.bumpers.forEach(function (bumper) {
                 if (bumper.frame == s.frame) {
