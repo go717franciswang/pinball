@@ -24,6 +24,8 @@ module Pinball {
         scoreText: Phaser.BitmapText;
         lifes: number;
         lifesText: Phaser.BitmapText;
+        soundQueue: string[];
+        playingSound: boolean;
 
         init(boardSetting) {
             this.boardSetting = boardSetting;
@@ -64,6 +66,9 @@ module Pinball {
             this.lifes = 3;
             this.lifesText = this.add.bitmapText(0, this.world.height-20, '04B_30', 'LIFES: 3', 12);
             this.lifesText.anchor.setTo(0, 1);
+
+            this.soundQueue = [];
+            this.playingSound = false;
         }
 
         addTable(c) {
@@ -184,7 +189,8 @@ module Pinball {
             var s:Phaser.Sprite = bumperBody.sprite;
             var f:any = s.frame;
             s.frame = (f + 1) % 5;
-            this.add.audio('sound' + ((f+1)%5).toString()).play();
+            this.soundQueue.push('sound' + ((f+1)%5).toString());
+            this.playSoundQueue();
 
             var sameBumersCount = 0;
             this.bumpers.forEach((bumper) => {
@@ -203,6 +209,19 @@ module Pinball {
 
             this.score += 10 * Math.pow(2, sameBumersCount-1);
             this.scoreText.text = 'SCORE: ' + this.score;
+        }
+
+        playSoundQueue() {
+            if (this.playingSound) return;
+            this.playingSound = true;
+            var playSound = () => {
+                this.add.audio(this.soundQueue.shift()).play();
+                setTimeout(() => {
+                    if (this.soundQueue.length > 0) playSound();
+                    else this.playingSound = false;
+                }, 300);
+            }
+            playSound();
         }
 
         animateBumper(bumper:Phaser.Sprite) {

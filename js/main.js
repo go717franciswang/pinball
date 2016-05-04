@@ -129,6 +129,8 @@ var Pinball;
             this.lifes = 3;
             this.lifesText = this.add.bitmapText(0, this.world.height - 20, '04B_30', 'LIFES: 3', 12);
             this.lifesText.anchor.setTo(0, 1);
+            this.soundQueue = [];
+            this.playingSound = false;
         };
         Main.prototype.addTable = function (c) {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, c.key);
@@ -234,8 +236,8 @@ var Pinball;
             var s = bumperBody.sprite;
             var f = s.frame;
             s.frame = (f + 1) % 5;
-            console.log('playing ' + 'sound' + ((f + 1) % 5).toString());
-            this.add.audio('sound' + ((f + 1) % 5).toString()).play();
+            this.soundQueue.push('sound' + ((f + 1) % 5).toString());
+            this.playSoundQueue();
             var sameBumersCount = 0;
             this.bumpers.forEach(function (bumper) {
                 if (bumper.frame == s.frame) {
@@ -252,6 +254,23 @@ var Pinball;
             shake.start();
             this.score += 10 * Math.pow(2, sameBumersCount - 1);
             this.scoreText.text = 'SCORE: ' + this.score;
+        };
+        Main.prototype.playSoundQueue = function () {
+            var _this = this;
+            if (this.playingSound)
+                return;
+            console.log('play sound queue');
+            this.playingSound = true;
+            var playSound = function () {
+                _this.add.audio(_this.soundQueue.shift()).play();
+                setTimeout(function () {
+                    if (_this.soundQueue.length > 0)
+                        playSound();
+                    else
+                        _this.playingSound = false;
+                }, 300);
+            };
+            playSound();
         };
         Main.prototype.animateBumper = function (bumper) {
             var copy = this.add.sprite(bumper.x, bumper.y, 'faces', bumper.frame);
