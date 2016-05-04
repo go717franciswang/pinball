@@ -26,6 +26,9 @@ module Pinball {
                     case "physics":
                         this.load.physics(a.file);
                     break;
+                    case "audio":
+                        this.load.audio(a.key, a.file);
+                    break;
                 }
             });
         }

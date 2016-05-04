@@ -69,6 +69,9 @@ var Pinball;
                     case "physics":
                         _this.load.physics(a.file);
                         break;
+                    case "audio":
+                        _this.load.audio(a.key, a.file);
+                        break;
                 }
             });
         };
