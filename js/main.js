@@ -109,6 +109,7 @@ var Pinball;
             this.ballMaterial = this.physics.p2.createMaterial('ballMaterial');
             this.tableMaterial = this.physics.p2.createMaterial('tableMaterial');
             this.bumperMaterial = this.physics.p2.createMaterial('bumperMaterial');
+            this.slingShotMaterial = this.physics.p2.createMaterial('slingShotMaterial');
             this.table = this.addTable(this.boardSetting.table);
             this.ball = this.addBall(this.boardSetting.ball);
             this.leftArm = this.addArm(this.boardSetting.arm_left, true, Phaser.Keyboard.LEFT);
@@ -119,10 +120,13 @@ var Pinball;
             });
             this.gun = this.addGun(this.boardSetting.gun, Phaser.Keyboard.SPACEBAR);
             this.dropHole = this.addDropHole();
+            this.slingShot = this.addSlingShot();
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.tableMaterial);
             this.ballVsTableMaterial.restitution = 0.5;
             this.ballVsBumperMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.bumperMaterial);
             this.ballVsBumperMaterial.restitution = 2.5;
+            this.ballVsSlingShotMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.slingShotMaterial);
+            this.ballVsSlingShotMaterial.restitution = 7;
             this.score = 0;
             this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
             this.scoreText.anchor.setTo(0, 1);
@@ -131,6 +135,20 @@ var Pinball;
             this.lifesText.anchor.setTo(0, 1);
             this.soundQueue = [];
             this.playingSound = false;
+            game = this;
+        };
+        Main.prototype.addSlingShot = function () {
+            var c = this.boardSetting.slingShot;
+            console.log(c);
+            if (!c)
+                return;
+            var slingShot = this.add.sprite(this.world.width / 2, this.world.height / 2);
+            this.physics.p2.enable(slingShot, this.boardSetting.debug);
+            slingShot.body.clearShapes();
+            slingShot.body.loadPolygon(c.physics, 'sling_shot');
+            slingShot.body.static = true;
+            slingShot.body.setMaterial(this.slingShotMaterial);
+            return slingShot;
         };
         Main.prototype.addTable = function (c) {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, c.key);
@@ -148,7 +166,7 @@ var Pinball;
             rect.drawRect(-50, -50, c.w, c.h);
             rect.endFill();
             var gun = this.add.sprite(c.x + c.w / 2, c.y + c.h / 2, rect.generateTexture());
-            this.physics.p2.enable(gun);
+            this.physics.p2.enable(gun, this.boardSetting.debug);
             gun.body.static = true;
             var key = this.input.keyboard.addKey(keyCode);
             var moveDown = function () { gun.body.y += 20; };
@@ -166,7 +184,7 @@ var Pinball;
         Main.prototype.addBall = function (c) {
             var ball = this.add.sprite(c.x, c.y, c.key);
             ball.scale.set(2);
-            this.physics.p2.enable(ball);
+            this.physics.p2.enable(ball, this.boardSetting.debug);
             ball.body.clearShapes();
             ball.body.setCircle(10);
             ball.body.fixedRotation = true;
@@ -176,7 +194,7 @@ var Pinball;
         Main.prototype.addArm = function (c, left, keyCode) {
             var _this = this;
             var arm = this.add.sprite(c.x, c.y, c.key);
-            this.physics.p2.enable(arm);
+            this.physics.p2.enable(arm, this.boardSetting.debug);
             arm.body.clearShapes();
             if (left) {
                 arm.body.loadPolygon(c.physics, 'arm_left');
@@ -223,7 +241,7 @@ var Pinball;
             var bumper = this.bumpers.create(p.x, p.y, this.boardSetting.bumpers.key, 0);
             bumper.originalX = p.x;
             bumper.scale.setTo(this.boardSetting.bumpers.scale);
-            this.physics.p2.enable(bumper);
+            this.physics.p2.enable(bumper, this.boardSetting.debug);
             bumper.body.clearShapes();
             bumper.body.setCircle(bumper.width / 2);
             bumper.body.static = true;
@@ -259,7 +277,6 @@ var Pinball;
             var _this = this;
             if (this.playingSound)
                 return;
-            console.log('play sound queue');
             this.playingSound = true;
             var playSound = function () {
                 _this.add.audio(_this.soundQueue.shift()).play();

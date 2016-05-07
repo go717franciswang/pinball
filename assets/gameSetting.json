@@ -151,6 +151,9 @@
                 "h": 80,
                 "yOffset": -20 
             },
+            "slingShot": {
+                "physics": "physicsData2"
+            },
             "debug": true
         }
     ]
