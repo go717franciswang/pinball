@@ -155,7 +155,7 @@
                 { "x": 105, "y": 580, "w": 80, "h": 20, "rotation": 1.1 },
                 { "x": 320, "y": 580, "w": 80, "h": 20, "rotation": -1.1 }
             ],
-            "debug": true
+            "debug": false
         }
     ]
 }

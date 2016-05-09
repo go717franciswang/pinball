@@ -8,7 +8,7 @@ module Pinball {
         preload() {
             this.load.path = 'assets/';
             this.load.bitmapFont('04B_30', '04B_30.png', '04B_30.fnt');
-            this.load.json('gameSetting', 'gameSetting.json');
+            this.load.json('gameSetting', 'gameSetting.json?rand='+Math.random());
             this.load.image('preloadBar', 'loader.png');
         }
 
