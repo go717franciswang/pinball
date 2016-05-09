@@ -13,7 +13,6 @@ module Pinball {
         gun: Phaser.Sprite;
         ball: Phaser.Sprite;
         ballMaterial: Phaser.Physics.P2.Material;
-        slingShot: Phaser.Sprite;
         slingShotMaterial: Phaser.Physics.P2.Material;
         leftArm: Phaser.Sprite;
         rightArm: Phaser.Sprite;
@@ -55,7 +54,7 @@ module Pinball {
             });
             this.gun = this.addGun(this.boardSetting.gun, Phaser.Keyboard.SPACEBAR);
             this.dropHole = this.addDropHole();
-            this.slingShot = this.addSlingShot();
+            this.addSlingShots();
 
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(
                 this.ballMaterial, this.tableMaterial);
@@ -65,7 +64,7 @@ module Pinball {
             this.ballVsBumperMaterial.restitution = 2.5;
             this.ballVsSlingShotMaterial = this.physics.p2.createContactMaterial(
                 this.ballMaterial, this.slingShotMaterial);
-            this.ballVsSlingShotMaterial.restitution = 7;
+            this.ballVsSlingShotMaterial.restitution = 5;
 
             this.score = 0;
             this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
@@ -81,16 +80,22 @@ module Pinball {
             game = this;
         }
 
-        addSlingShot() {
-            var c = this.boardSetting.slingShot;
-            if (!c) return;
-            var slingShot = this.add.sprite(this.world.width/2, this.world.height/2);
-            this.physics.p2.enable(slingShot, this.boardSetting.debug);
-            slingShot.body.clearShapes();
-            slingShot.body.loadPolygon(c.physics, 'sling_shot');
-            slingShot.body.static = true;
-            slingShot.body.setMaterial(this.slingShotMaterial);
-            return slingShot;
+        addSlingShots() {
+            var cs = this.boardSetting.slingShots;
+            if (!cs) return;
+            for (var i = 0; i < cs.length; i++) {
+                var c = cs[i];
+                (() => {
+                    var slingShot = this.add.sprite(c.x, c.y);
+                    this.physics.p2.enable(slingShot, this.boardSetting.debug);
+                    slingShot.body.clearShapes();
+                    slingShot.body.addRectangle(c.w, c.h);
+                    slingShot.body.rotation = c.rotation;
+                    slingShot.body.static = true;
+                    slingShot.body.setMaterial(this.slingShotMaterial);
+                    console.log(slingShot);
+                })();
+            }
         }
 
         addTable(c) {
@@ -136,7 +141,7 @@ module Pinball {
             ball.scale.set(2);
             this.physics.p2.enable(ball, this.boardSetting.debug);
             ball.body.clearShapes();
-            ball.body.setCircle(10);
+            ball.body.setCircle(8);
             ball.body.fixedRotation = true;
             ball.body.setMaterial(this.ballMaterial);
 

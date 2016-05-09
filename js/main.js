@@ -120,13 +120,13 @@ var Pinball;
             });
             this.gun = this.addGun(this.boardSetting.gun, Phaser.Keyboard.SPACEBAR);
             this.dropHole = this.addDropHole();
-            this.slingShot = this.addSlingShot();
+            this.addSlingShots();
             this.ballVsTableMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.tableMaterial);
             this.ballVsTableMaterial.restitution = 0.5;
             this.ballVsBumperMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.bumperMaterial);
             this.ballVsBumperMaterial.restitution = 2.5;
             this.ballVsSlingShotMaterial = this.physics.p2.createContactMaterial(this.ballMaterial, this.slingShotMaterial);
-            this.ballVsSlingShotMaterial.restitution = 7;
+            this.ballVsSlingShotMaterial.restitution = 5;
             this.score = 0;
             this.scoreText = this.add.bitmapText(0, this.world.height, '04B_30', 'SCORE: 0', 12);
             this.scoreText.anchor.setTo(0, 1);
@@ -137,18 +137,24 @@ var Pinball;
             this.playingSound = false;
             game = this;
         };
-        Main.prototype.addSlingShot = function () {
-            var c = this.boardSetting.slingShot;
-            console.log(c);
-            if (!c)
+        Main.prototype.addSlingShots = function () {
+            var _this = this;
+            var cs = this.boardSetting.slingShots;
+            if (!cs)
                 return;
-            var slingShot = this.add.sprite(this.world.width / 2, this.world.height / 2);
-            this.physics.p2.enable(slingShot, this.boardSetting.debug);
-            slingShot.body.clearShapes();
-            slingShot.body.loadPolygon(c.physics, 'sling_shot');
-            slingShot.body.static = true;
-            slingShot.body.setMaterial(this.slingShotMaterial);
-            return slingShot;
+            for (var i = 0; i < cs.length; i++) {
+                var c = cs[i];
+                (function () {
+                    var slingShot = _this.add.sprite(c.x, c.y);
+                    _this.physics.p2.enable(slingShot, _this.boardSetting.debug);
+                    slingShot.body.clearShapes();
+                    slingShot.body.addRectangle(c.w, c.h);
+                    slingShot.body.rotation = c.rotation;
+                    slingShot.body.static = true;
+                    slingShot.body.setMaterial(_this.slingShotMaterial);
+                    console.log(slingShot);
+                })();
+            }
         };
         Main.prototype.addTable = function (c) {
             var table = this.add.sprite(this.world.width / 2, this.world.height / 2, c.key);
@@ -186,7 +192,7 @@ var Pinball;
             ball.scale.set(2);
             this.physics.p2.enable(ball, this.boardSetting.debug);
             ball.body.clearShapes();
-            ball.body.setCircle(10);
+            ball.body.setCircle(8);
             ball.body.fixedRotation = true;
             ball.body.setMaterial(this.ballMaterial);
             return ball;
