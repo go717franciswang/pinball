@@ -86,26 +86,10 @@
                     "type": "physics",
                     "file": "physicsData2"
                 },
-                {
-                    "type": "audio",
-                    "key": "sound1",
-                    "file": "1.m4a"
-                },
-                {
-                    "type": "audio",
-                    "key": "sound2",
-                    "file": "2.m4a"
-                },
-                {
-                    "type": "audio",
-                    "key": "sound3",
-                    "file": "3.m4a"
-                },
-                {
-                    "type": "audio",
-                    "key": "sound4",
-                    "file": "4.m4a"
-                }
+                { "type": "audio", "key": "sound1", "file": "1.m4a" },
+                { "type": "audio", "key": "sound2", "file": "2.m4a" },
+                { "type": "audio", "key": "sound3", "file": "3.m4a" },
+                { "type": "audio", "key": "sound4", "file": "4.m4a" }
             ],
             "table": {
                 "key": "table2",
