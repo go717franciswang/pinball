@@ -332,6 +332,20 @@ var Pinball;
             });
             return dropHole;
         };
+        Main.prototype.constrainVelocity = function (sprite, maxVelocity) {
+            var body = sprite.body;
+            var angle, currVelocitySqr, vx, vy;
+            vx = body.data.velocity[0];
+            vy = body.data.velocity[1];
+            currVelocitySqr = vx * vx + vy * vy;
+            if (currVelocitySqr > maxVelocity * maxVelocity) {
+                angle = Math.atan2(vy, vx);
+                vx = Math.cos(angle) * maxVelocity;
+                vy = Math.cos(angle) * maxVelocity;
+                body.data.velocity[0] = vx;
+                body.data.velocity[1] = vy;
+            }
+        };
         Main.prototype.update = function () {
             if (this.boardSetting.debug && this.input.activePointer.isDown) {
                 this.ball.body.x = this.input.activePointer.x;
@@ -339,6 +353,7 @@ var Pinball;
                 this.ball.body.velocity.x = 0;
                 this.ball.body.velocity.y = 0;
             }
+            this.constrainVelocity(this.ball, 50);
         };
         Main.prototype.render = function () {
             //console.log(this.input.activePointer.x, this.input.activePointer.y);
