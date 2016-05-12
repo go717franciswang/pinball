@@ -102,7 +102,8 @@ var Pinball;
         };
         Main.prototype.create = function () {
             var _this = this;
-            this.world.setBounds(0, 0, this.world.width, this.world.height + 20);
+            this.worldBoundOffsetY = 20;
+            this.world.setBounds(0, 0, this.world.width, this.world.height + this.worldBoundOffsetY);
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
@@ -158,7 +159,7 @@ var Pinball;
             }
         };
         Main.prototype.addTable = function (c) {
-            var table = this.add.sprite(this.world.width / 2, this.world.height / 2, c.key);
+            var table = this.add.sprite(this.world.width / 2, this.world.height / 2 - this.worldBoundOffsetY / 2, c.key);
             this.physics.p2.enable(table);
             table.body.clearShapes();
             table.body.loadPolygon(c.physics, 'table');
@@ -333,6 +334,7 @@ var Pinball;
                     }
                 }
             });
+            var dropHoleCover = this.add.sprite(c.x, c.y, c.key);
             return dropHole;
         };
         Main.prototype.constrainVelocity = function (sprite, maxVelocity) {

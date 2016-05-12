@@ -7,6 +7,7 @@ module Pinball {
 
     export class Main extends Phaser.State {
 
+        worldBoundOffsetY: number;
         boardSetting: any;
         table: Phaser.Sprite;
         tableMaterial: Phaser.Physics.P2.Material;
@@ -34,7 +35,8 @@ module Pinball {
         }
 
         create() {
-            this.world.setBounds(0, 0, this.world.width, this.world.height + 20);
+            this.worldBoundOffsetY = 20;
+            this.world.setBounds(0, 0, this.world.width, this.world.height + this.worldBoundOffsetY);
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
@@ -100,7 +102,7 @@ module Pinball {
         }
 
         addTable(c) {
-            var table = this.add.sprite(this.world.width/2, this.world.height/2, c.key);
+            var table = this.add.sprite(this.world.width/2, this.world.height/2-this.worldBoundOffsetY/2, c.key);
             this.physics.p2.enable(table);
             table.body.clearShapes();
             table.body.loadPolygon(c.physics, 'table');
@@ -288,6 +290,8 @@ module Pinball {
                     }
                 }
             });
+
+            var dropHoleCover = this.add.sprite(c.x, c.y, c.key);
             return dropHole;
         }
 

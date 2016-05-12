@@ -74,7 +74,7 @@
             "assets": [
                 {
                     "type": "images",
-                    "files": ["ball", "arm_left2", "table2"]
+                    "files": ["ball", "arm_left2", "table2", "drop_hole2"]
                 },
                 {
                     "type": "spritesheet",
@@ -134,13 +134,16 @@
             "dropHole": {
                 "w": 200,
                 "h": 80,
-                "yOffset": -20 
+                "yOffset": -20,
+                "x": 150,
+                "y": 730,
+                "key": "drop_hole2"
             },
             "slingShots": [
                 { "x": 105, "y": 580, "w": 80, "h": 20, "rotation": 1.1 },
                 { "x": 320, "y": 580, "w": 80, "h": 20, "rotation": -1.1 }
             ],
-            "debug": false
+            "debug": true
         }
     ]
 }
