@@ -34,6 +34,7 @@ module Pinball {
         }
 
         create() {
+            this.world.setBounds(0, 0, this.world.width, this.world.height + 20);
             this.stage.backgroundColor = 0xffffff;
             this.physics.startSystem(Phaser.Physics.P2JS);
             this.physics.p2.gravity.y = 100;
@@ -144,6 +145,8 @@ module Pinball {
             ball.body.setCircle(8);
             ball.body.fixedRotation = true;
             ball.body.setMaterial(this.ballMaterial);
+            // doensn't work, ball won't collide with anything
+            // ball.body.collideWorldBounds = false;
 
             return ball;
         }
