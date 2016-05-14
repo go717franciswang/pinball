@@ -87,8 +87,21 @@ var Pinball;
     Pinball.Loader = Loader;
 })(Pinball || (Pinball = {}));
 /// <reference path="./phaser.d.ts"/>
+var Pinball;
+(function (Pinball) {
+    var Flipper = (function (_super) {
+        __extends(Flipper, _super);
+        function Flipper() {
+            _super.apply(this, arguments);
+        }
+        return Flipper;
+    }(Phaser.Sprite));
+    Pinball.Flipper = Flipper;
+})(Pinball || (Pinball = {}));
+/// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>
 /// <reference path="./jquery.d.ts"/>
+/// <reference path="./flipper.ts"/>
 var game;
 var Pinball;
 (function (Pinball) {
@@ -203,7 +216,8 @@ var Pinball;
         };
         Main.prototype.addArm = function (c, left, keyCode) {
             var _this = this;
-            var arm = this.add.sprite(c.x, c.y, c.key);
+            var arm = new Pinball.Flipper(this.game, c.x, c.y, c.key);
+            //var arm:Flipper = this.add.sprite(c.x, c.y, c.key);
             this.physics.p2.enable(arm, this.boardSetting.debug);
             arm.body.clearShapes();
             if (left) {
@@ -241,6 +255,8 @@ var Pinball;
             arm.inputEnabled = true;
             arm.events.onInputDown.add(flipUp);
             arm.events.onInputUp.add(flipDown);
+            arm.flipUp = flipUp;
+            arm.flipDown = flipDown;
             return arm;
         };
         Main.prototype.setConstraintBound = function (constraint, maxDegrees) {
@@ -357,6 +373,13 @@ var Pinball;
                 this.ball.body.y = this.input.activePointer.y;
                 this.ball.body.velocity.x = 0;
                 this.ball.body.velocity.y = 0;
+            }
+            if (this.input.activePointer.isDown) {
+                var x = this.input.activePointer.x;
+                var y = this.input.activePointer.y;
+                if (x > 0 && x < 180 && y > 650 && y < 770) {
+                    this.leftArm.flipUp();
+                }
             }
             this.constrainVelocity(this.ball, 50);
         };

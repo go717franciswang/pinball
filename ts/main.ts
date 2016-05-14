@@ -1,6 +1,7 @@
 /// <reference path="./phaser.d.ts"/>
 /// <reference path="./p2.d.ts"/>
 /// <reference path="./jquery.d.ts"/>
+/// <reference path="./flipper.ts"/>
 
 var game;
 module Pinball {
@@ -15,8 +16,8 @@ module Pinball {
         ball: Phaser.Sprite;
         ballMaterial: Phaser.Physics.P2.Material;
         slingShotMaterial: Phaser.Physics.P2.Material;
-        leftArm: Phaser.Sprite;
-        rightArm: Phaser.Sprite;
+        leftArm: Pinball.Flipper;
+        rightArm: Pinball.Flipper;
         bumpers: Phaser.Group;
         dropHole: Phaser.Sprite;
         bumperMaterial: Phaser.Physics.P2.Material;
@@ -153,8 +154,9 @@ module Pinball {
             return ball;
         }
 
-        addArm(c, left:boolean, keyCode:number):Phaser.Sprite {
-            var arm = this.add.sprite(c.x, c.y, c.key);
+        addArm(c, left:boolean, keyCode:number):Flipper {
+            var arm = new Flipper(this.game, c.x, c.y, c.key);
+            //var arm:Flipper = this.add.sprite(c.x, c.y, c.key);
             this.physics.p2.enable(arm, this.boardSetting.debug);
             arm.body.clearShapes();
             if (left) {
@@ -194,6 +196,8 @@ module Pinball {
             arm.inputEnabled = true;
             arm.events.onInputDown.add(flipUp);
             arm.events.onInputUp.add(flipDown);
+            arm.flipUp = flipUp;
+            arm.flipDown = flipDown;
 
             return arm;
         }
@@ -316,6 +320,14 @@ module Pinball {
                 this.ball.body.y = this.input.activePointer.y;
                 this.ball.body.velocity.x = 0;
                 this.ball.body.velocity.y = 0;
+            }
+
+            if (this.input.activePointer.isDown) {
+                var x = this.input.activePointer.x;
+                var y = this.input.activePointer.y;
+                if (x > 0 && x < 180 && y > 650 && y < 770) {
+                    this.leftArm.flipUp();
+                }
             }
 
             this.constrainVelocity(this.ball, 50);
