@@ -150,6 +150,7 @@ var Pinball;
             this.lifesText.anchor.setTo(0, 1);
             this.soundQueue = [];
             this.playingSound = false;
+            this.flippedUp = false;
             game = this;
         };
         Main.prototype.addSlingShots = function () {
@@ -217,6 +218,7 @@ var Pinball;
         Main.prototype.addArm = function (c, left, keyCode) {
             var _this = this;
             var arm = new Pinball.Flipper(this.game, c.x, c.y, c.key);
+            this.game.add.existing(arm);
             //var arm:Flipper = this.add.sprite(c.x, c.y, c.key);
             this.physics.p2.enable(arm, this.boardSetting.debug);
             arm.body.clearShapes();
@@ -379,7 +381,17 @@ var Pinball;
                 var y = this.input.activePointer.y;
                 if (x > 0 && x < 180 && y > 650 && y < 770) {
                     this.leftArm.flipUp();
+                    this.flippedUp = true;
                 }
+                else if (x > 240 && x < 440 && y > 650 && y < 770) {
+                    this.rightArm.flipUp();
+                    this.flippedUp = true;
+                }
+            }
+            if (this.flippedUp && this.input.activePointer.isUp) {
+                this.leftArm.flipDown();
+                this.rightArm.flipDown();
+                this.flippedUp = false;
             }
             this.constrainVelocity(this.ball, 50);
         };

@@ -30,6 +30,7 @@ module Pinball {
         lifesText: Phaser.BitmapText;
         soundQueue: string[];
         playingSound: boolean;
+        flippedUp: boolean;
 
         init(boardSetting) {
             this.boardSetting = boardSetting;
@@ -80,6 +81,7 @@ module Pinball {
 
             this.soundQueue = [];
             this.playingSound = false;
+            this.flippedUp = false;
 
             game = this;
         }
@@ -156,6 +158,7 @@ module Pinball {
 
         addArm(c, left:boolean, keyCode:number):Flipper {
             var arm = new Flipper(this.game, c.x, c.y, c.key);
+            this.game.add.existing(arm);
             //var arm:Flipper = this.add.sprite(c.x, c.y, c.key);
             this.physics.p2.enable(arm, this.boardSetting.debug);
             arm.body.clearShapes();
@@ -327,7 +330,17 @@ module Pinball {
                 var y = this.input.activePointer.y;
                 if (x > 0 && x < 180 && y > 650 && y < 770) {
                     this.leftArm.flipUp();
+                    this.flippedUp = true;
+                } else if (x > 240 && x < 440 && y > 650 && y < 770) {
+                    this.rightArm.flipUp();
+                    this.flippedUp = true;
                 }
+            }
+
+            if (this.flippedUp && this.input.activePointer.isUp) {
+                this.leftArm.flipDown();
+                this.rightArm.flipDown();
+                this.flippedUp = false;
             }
 
             this.constrainVelocity(this.ball, 50);
