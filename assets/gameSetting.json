@@ -6,7 +6,7 @@
             "assets": [
                 {
                     "type": "images",
-                    "files": ["ball", "arm_left", "table"]
+                    "files": ["ball", "arm_left", "table", "fullscreen_button"]
                 },
                 {
                     "type": "spritesheet",
@@ -74,7 +74,7 @@
             "assets": [
                 {
                     "type": "images",
-                    "files": ["ball", "arm_left2", "table2", "drop_hole2"]
+                    "files": ["ball", "arm_left2", "table2", "drop_hole2", "fullscreen_button"]
                 },
                 {
                     "type": "spritesheet",

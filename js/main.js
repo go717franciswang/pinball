@@ -151,8 +151,8 @@ var Pinball;
             this.soundQueue = [];
             this.playingSound = false;
             this.flippedUp = false;
+            var button = this.game.add.button(this.world.width - 50, 10, 'fullscreen_button', this.gofull, this, 0, 0, 0);
             this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.game.input.onDown.add(this.gofull, this);
             game = this;
         };
         Main.prototype.gofull = function () {
