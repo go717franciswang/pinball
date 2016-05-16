@@ -151,7 +151,17 @@ var Pinball;
             this.soundQueue = [];
             this.playingSound = false;
             this.flippedUp = false;
+            this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.game.input.onDown.add(this.gofull, this);
             game = this;
+        };
+        Main.prototype.gofull = function () {
+            if (game.scale.isFullScreen) {
+                this.game.scale.stopFullScreen();
+            }
+            else {
+                this.game.scale.startFullScreen(false);
+            }
         };
         Main.prototype.addSlingShots = function () {
             var _this = this;

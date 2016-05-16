@@ -83,7 +83,17 @@ module Pinball {
             this.playingSound = false;
             this.flippedUp = false;
 
+            this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.game.input.onDown.add(this.gofull, this);
             game = this;
+        }
+
+        gofull() {
+            if (game.scale.isFullScreen) {
+                this.game.scale.stopFullScreen();
+            } else {
+                this.game.scale.startFullScreen(false);
+            }
         }
 
         addSlingShots() {
